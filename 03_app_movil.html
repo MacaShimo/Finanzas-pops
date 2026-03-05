@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="theme-color" content="#1a1a2e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Finanzas Pops">
+  <title>💰 Las Finanzas de las Pops</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f0f1a;
+      color: #e8e8f0;
+      min-height: 100vh;
+    }
+
+    /* ── Header ─────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, #1a1a3e, #2d2d6e);
+      padding: 20px 16px 16px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+    header h1 { font-size: 1.4rem; font-weight: 700; color: #a78bfa; }
+    header p  { font-size: 0.8rem; color: #888; margin-top: 2px; }
+
+    /* ── Tabs ───────────────────────────────── */
+    .tabs {
+      display: flex;
+      background: #12122a;
+      border-bottom: 1px solid #2a2a4a;
+    }
+    .tab {
+      flex: 1; padding: 12px 0;
+      text-align: center; font-size: 0.85rem;
+      color: #666; cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab.active { color: #a78bfa; border-bottom-color: #a78bfa; }
+
+    /* ── Sections ───────────────────────────── */
+    .section { display: none; padding: 16px; }
+    .section.active { display: block; }
+
+    /* ── Cards ──────────────────────────────── */
+    .card {
+      background: #1a1a3e;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border: 1px solid #2a2a5a;
+    }
+    .card-title {
+      font-size: 0.75rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    /* ── Summary numbers ────────────────────── */
+    .summary-row {
+      display: flex; gap: 10px; margin-bottom: 14px;
+    }
+    .summary-box {
+      flex: 1; background: #12122a;
+      border-radius: 10px; padding: 12px 10px;
+      text-align: center;
+    }
+    .summary-box .label { font-size: 0.7rem; color: #888; margin-bottom: 4px; }
+    .summary-box .amount { font-size: 1.1rem; font-weight: 700; }
+    .amount.green  { color: #34d399; }
+    .amount.red    { color: #f87171; }
+    .amount.purple { color: #a78bfa; }
+
+    /* ── Form ───────────────────────────────── */
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px; }
+
+    input, select, textarea {
+      width: 100%;
+      background: #12122a;
+      border: 1px solid #2a2a5a;
+      border-radius: 8px;
+      color: #e8e8f0;
+      padding: 11px 12px;
+      font-size: 0.95rem;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none; border-color: #a78bfa;
+    }
+    textarea { resize: none; height: 70px; }
+
+    /* Tipo toggle */
+    .type-toggle { display: flex; gap: 8px; margin-bottom: 14px; }
+
+    /* Ámbito toggle (Casa / Personal) */
+    .ambito-toggle {
+      display: flex; gap: 0; margin-bottom: 14px;
+      border-radius: 10px; overflow: hidden;
+      border: 1px solid #2a2a5a;
+    }
+    .ambito-btn {
+      flex: 1; padding: 10px 8px;
+      background: #12122a; color: #666;
+      border: none; font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .ambito-btn.active.casa     { background: #1a2a4a; color: #60a5fa; }
+    .ambito-btn.active.personal { background: #2a1a4a; color: #a78bfa; }
+    .type-btn {
+      flex: 1; padding: 10px;
+      border-radius: 8px; border: 1px solid #2a2a5a;
+      background: #12122a; color: #888;
+      font-size: 0.9rem; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .type-btn.active.gasto   { background: #3f1212; border-color: #f87171; color: #f87171; }
+    .type-btn.active.ingreso { background: #0f3325; border-color: #34d399; color: #34d399; }
+
+    /* ── Buttons ────────────────────────────── */
+    .btn {
+      width: 100%; padding: 14px;
+      border: none; border-radius: 10px;
+      font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .btn:active { opacity: 0.8; }
+    .btn-primary { background: linear-gradient(135deg, #7c3aed, #a78bfa); color: white; }
+    .btn-sm {
+      padding: 6px 12px; font-size: 0.8rem;
+      border-radius: 6px; border: none; cursor: pointer;
+    }
+    .btn-danger { background: #3f1212; color: #f87171; }
+
+    /* ── Transaction list ───────────────────── */
+    .tx-wrapper {
+      position: relative; overflow: hidden;
+      border-bottom: 1px solid #1f1f3a;
+    }
+    .tx-wrapper:last-child { border-bottom: none; }
+
+    .tx-item {
+      display: flex; align-items: center;
+      padding: 12px 0;
+      gap: 10px;
+      transition: transform 0.25s ease;
+      background: #1a1a3e;
+      position: relative; z-index: 1;
+      cursor: pointer;
+      user-select: none;
+    }
+    .tx-actions {
+      position: absolute; right: 0; top: 0; bottom: 0;
+      display: flex; align-items: center;
+      z-index: 0;
+    }
+    .tx-action-btn {
+      height: 100%; width: 64px;
+      border: none; cursor: pointer;
+      font-size: 1.2rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 2px;
+    }
+    .tx-action-btn span { font-size: 0.6rem; font-weight: 600; }
+    .tx-btn-edit   { background: #2d2d6e; color: #a78bfa; }
+    .tx-btn-delete { background: #3f1212; color: #f87171; }
+    .tx-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .tx-icon.gasto   { background: #3f1212; }
+    .tx-icon.ingreso { background: #0f3325; }
+    .tx-info { flex: 1; min-width: 0; }
+    .tx-concepto { font-size: 0.9rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tx-meta { font-size: 0.72rem; color: #666; margin-top: 2px; }
+    .tx-amount { font-size: 0.95rem; font-weight: 700; flex-shrink: 0; }
+
+    /* ── Toast ──────────────────────────────── */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #34d399; color: #0a2a1a;
+      padding: 10px 20px; border-radius: 20px;
+      font-size: 0.9rem; font-weight: 600;
+      transition: transform 0.3s; z-index: 100;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.error { background: #f87171; color: #3f0000; }
+
+    /* ── Config banner ──────────────────────── */
+    .config-banner {
+      background: #2a1a00; border: 1px solid #f59e0b;
+      border-radius: 10px; padding: 12px 14px;
+      margin-bottom: 14px; font-size: 0.82rem; color: #fcd34d;
+    }
+    .config-input-row { display: flex; gap: 8px; align-items: flex-end; }
+    .config-input-row input { flex: 1; }
+    .config-input-row button {
+      padding: 11px 14px; background: #f59e0b; color: #1a0f00;
+      border: none; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap;
+    }
+
+    select option { background: #1a1a3e; }
+
+    /* ── Pantalla bienvenida ────────────────── */
+    .welcome-overlay {
+      position: fixed; inset: 0;
+      background: #0f0f1a;
+      z-index: 300;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 32px 24px;
+      transition: opacity 0.4s;
+    }
+    .welcome-overlay.hide {
+      opacity: 0; pointer-events: none;
+    }
+    .welcome-paw { font-size: 3rem; margin-bottom: 12px; }
+    .welcome-title {
+      font-size: 1.4rem; font-weight: 700;
+      color: #a78bfa; margin-bottom: 6px; text-align: center;
+    }
+    .welcome-sub {
+      font-size: 0.85rem; color: #666;
+      margin-bottom: 32px; text-align: center;
+    }
+    .welcome-btns { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 280px; }
+    .welcome-btn {
+      padding: 16px; border-radius: 14px;
+      border: 2px solid #2a2a5a;
+      background: #1a1a3e; color: #e8e8f0;
+      font-size: 1.1rem; font-weight: 600;
+      cursor: pointer; text-align: center;
+      transition: all 0.2s;
+    }
+    .welcome-btn:active { transform: scale(0.97); }
+    .welcome-btn.selected {
+      border-color: #a78bfa;
+      background: #2d2060; color: #a78bfa;
+    }
+
+    /* ── Chip de usuario activo ─────────────── */
+    .user-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #2d2060; border: 1px solid #a78bfa;
+      border-radius: 20px; padding: 3px 10px 3px 8px;
+      font-size: 0.72rem; color: #a78bfa; cursor: pointer;
+      margin-left: 8px; vertical-align: middle;
+    }
+
+    /* ── Offline indicator ──────────────────── */
+    .status-bar {
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px; padding: 6px 12px;
+      font-size: 0.75rem; font-weight: 600;
+      transition: all 0.3s;
+    }
+    .status-bar.online  { background: #0f3325; color: #34d399; }
+    .status-bar.offline { background: #3f1212; color: #f87171; }
+    .status-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+    }
+    .online  .status-dot { background: #34d399; }
+    .offline .status-dot { background: #f87171; animation: pulse 1s infinite; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+    }
+    .sync-btn {
+      margin-left: 8px; padding: 2px 8px;
+      background: #a78bfa; color: white;
+      border: none; border-radius: 10px;
+      font-size: 0.7rem; font-weight: 600; cursor: pointer;
+    }
+    /* ── Modal edición ──────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 200; display: none;
+      align-items: flex-end; justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: #1a1a3e; border-radius: 20px 20px 0 0;
+      padding: 20px 16px 32px; width: 100%; max-width: 480px;
+      border: 1px solid #2a2a5a; border-bottom: none;
+      max-height: 90vh; overflow-y: auto;
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px;
+    }
+    .modal-title { font-size: 1rem; font-weight: 700; color: #a78bfa; }
+    .modal-close {
+      background: #12122a; border: none; color: #888;
+      width: 30px; height: 30px; border-radius: 50%;
+      font-size: 1rem; cursor: pointer;
+    }
+    .btn-row { display: flex; gap: 8px; margin-top: 12px; }
+    .btn-row .btn { flex: 1; padding: 12px; }
+    .btn-secondary { background: #2a2a5a; color: #a78bfa; }
+    .btn-delete-confirm { background: #3f1212; color: #f87171; }
+
+    /* ── Botón flotante gasto rápido ────────── */
+    .fab {
+      position: fixed; bottom: 24px; right: 20px;
+      width: 58px; height: 58px; border-radius: 50%;
+      background: linear-gradient(135deg, #7c3aed, #a78bfa);
+      border: none; cursor: pointer;
+      font-size: 1.6rem;
+      box-shadow: 0 4px 20px rgba(124,58,237,0.5);
+      z-index: 150;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s;
+    }
+    .fab:active { transform: scale(0.92); }
+
+    /* ── Modal gasto rápido ─────────────────── */
+    .quick-modal {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #1a1a3e; border-radius: 20px 20px 0 0;
+      padding: 20px 16px 36px;
+      border: 1px solid #2a2a5a; border-bottom: none;
+      z-index: 160;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+    .quick-modal.show { transform: translateY(0); }
+    .quick-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+      z-index: 155; display: none;
+    }
+    .quick-overlay.show { display: block; }
+    .quick-title {
+      font-size: 1rem; font-weight: 700; color: #a78bfa;
+      margin-bottom: 14px; text-align: center;
+    }
+    .quick-amount-row {
+      display: flex; gap: 8px; margin-bottom: 12px; align-items: flex-end;
+    }
+    .quick-amount-row input {
+      flex: 1; font-size: 1.4rem; font-weight: 700;
+      text-align: center; padding: 14px;
+    }
+
+    /* ── Contador gastos del día ─────────────── */
+    .day-counter {
+      background: #12122a; border: 1px solid #2a2a5a;
+      border-radius: 12px; padding: 10px 14px;
+      margin-bottom: 14px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .day-counter .label { font-size: 0.75rem; color: #888; }
+    .day-counter .value { font-size: 1.1rem; font-weight: 700; color: #f87171; }
+    .day-counter .count { font-size: 0.75rem; color: #666; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ BIENVENIDA ══════════ -->
+<div class="welcome-overlay" id="welcome-overlay">
+  <div class="welcome-paw">🐾</div>
+  <div class="welcome-title">Las Finanzas de las Pops</div>
+  <div class="welcome-sub">¿Quién eres hoy?</div>
+  <div class="welcome-btns" id="welcome-btns">
+    <!-- se llena dinámicamente con los usuarios -->
+  </div>
+</div>
+
+<header>
+  <h1><svg viewBox="0 0 100 100" width="22" height="22" style="vertical-align:middle;margin-right:6px;display:inline-block" xmlns="http://www.w3.org/2000/svg">
+  <!-- toe beans -->
+  <ellipse cx="28" cy="28" rx="11" ry="13" fill="#a78bfa"/>
+  <ellipse cx="52" cy="20" rx="11" ry="13" fill="#a78bfa"/>
+  <ellipse cx="76" cy="28" rx="11" ry="13" fill="#a78bfa"/>
+  <ellipse cx="88" cy="52" rx="10" ry="12" fill="#a78bfa"/>
+  <!-- main pad -->
+  <ellipse cx="55" cy="68" rx="28" ry="26" fill="#a78bfa"/>
+</svg>Las Finanzas de las Pops</h1>
+  <p id="header-fecha"></p>
+</header>
+
+<div class="status-bar online" id="status-bar">
+  <div class="status-dot"></div>
+  <span id="status-text">Conectado</span>
+  <button class="sync-btn" id="sync-btn" onclick="sincronizarPendientes()" style="display:none">↑ Sincronizar</button>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('inicio')">🏠 Inicio</div>
+  <div class="tab" onclick="showTab('nuevo')">➕ Nuevo</div>
+  <div class="tab" onclick="showTab('historial')">📋 Historial</div>
+  <div class="tab" onclick="showTab('yo')" id="tab-yo-btn">👤 Yo</div>
+</div>
+
+<!-- ══════════ INICIO ══════════ -->
+<div class="section active" id="tab-inicio">
+
+  <div id="config-section" class="config-banner" style="display:none">
+    ⚙️ Configura la URL de tu API para conectar con SQL Server:
+    <div class="config-input-row" style="margin-top:8px">
+      <input type="text" id="api-url-input" placeholder="http://192.168.1.50:8000">
+      <button onclick="guardarApiUrl()">Guardar</button>
+    </div>
+  </div>
+
+  <!-- Contador gastos del día -->
+  <div class="day-counter" id="day-counter">
+    <div>
+      <div class="label">💸 Gastos de hoy</div>
+      <div class="count" id="day-count">— movimientos</div>
+    </div>
+    <div class="value" id="day-total">—</div>
+  </div>
+
+  <div class="summary-row">
+    <div class="summary-box">
+      <div class="label">Ingresos</div>
+      <div class="amount green" id="sum-ingresos">—</div>
+    </div>
+    <div class="summary-box">
+      <div class="label">Gastos</div>
+      <div class="amount red" id="sum-gastos">—</div>
+    </div>
+    <div class="summary-box">
+      <div class="label">Neto</div>
+      <div class="amount purple" id="sum-neto">—</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Gastos por área (mes actual)</div>
+    <div id="areas-chart">Cargando...</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Últimos movimientos</div>
+    <div id="ultimos-movimientos">Cargando...</div>
+  </div>
+</div>
+
+<!-- ══════════ NUEVO MOVIMIENTO ══════════ -->
+<div class="section" id="tab-nuevo">
+  <div class="card">
+    <div class="card-title">Registrar movimiento</div>
+
+    <div class="type-toggle">
+      <button class="type-btn gasto active" id="btn-gasto"   onclick="setTipo('GASTO')">💸 Gasto</button>
+      <button class="type-btn ingreso"      id="btn-ingreso" onclick="setTipo('INGRESO')">💵 Ingreso</button>
+    </div>
+
+    <div class="ambito-toggle">
+      <button class="ambito-btn casa active" id="btn-casa"     onclick="setAmbito('casa')">🏠 Casa</button>
+      <button class="ambito-btn personal"    id="btn-personal" onclick="setAmbito('personal')">🐾 Personal</button>
+    </div>
+
+    <div class="form-group">
+      <label>Importe ($CLP)</label>
+      <input type="number" id="f-importe" placeholder="0.00" step="0.01" min="0">
+    </div>
+
+    <div class="form-group">
+      <label>Fecha</label>
+      <input type="date" id="f-fecha">
+    </div>
+
+    <div class="form-group">
+      <label>Cuenta / Banco</label>
+      <select id="f-cuenta"><option value="">Cargando...</option></select>
+    </div>
+
+    <div class="form-group">
+      <label>Área de gasto</label>
+      <select id="f-area" onchange="cargarCategorias()"><option value="">— Selecciona —</option></select>
+    </div>
+
+    <div class="form-group">
+      <label>Categoría</label>
+      <select id="f-categoria"><option value="">— Selecciona área primero —</option></select>
+    </div>
+
+    <div class="form-group">
+      <label>Concepto</label>
+      <input type="text" id="f-concepto" placeholder="Descripción breve">
+    </div>
+
+    <div class="form-group">
+      <label>Nota (opcional)</label>
+      <textarea id="f-descripcion" placeholder="Detalles adicionales..."></textarea>
+    </div>
+
+    <button class="btn btn-primary" onclick="guardarMovimiento()">💾 Guardar movimiento</button>
+  </div>
+</div>
+
+<!-- ══════════ HISTORIAL ══════════ -->
+<div class="section" id="tab-historial">
+  <div class="card">
+    <div class="card-title">Filtros</div>
+    <div style="display:flex; gap:8px; margin-bottom:10px">
+      <select id="filtro-tipo" style="flex:1">
+        <option value="">Todos</option>
+        <option value="GASTO">Gastos</option>
+        <option value="INGRESO">Ingresos</option>
+      </select>
+      <select id="filtro-mes" style="flex:1">
+        <option value="">Todo el año</option>
+        <option value="1">Enero</option><option value="2">Febrero</option>
+        <option value="3">Marzo</option><option value="4">Abril</option>
+        <option value="5">Mayo</option><option value="6">Junio</option>
+        <option value="7">Julio</option><option value="8">Agosto</option>
+        <option value="9">Septiembre</option><option value="10">Octubre</option>
+        <option value="11">Noviembre</option><option value="12">Diciembre</option>
+      </select>
+    </div>
+    <div style="margin-top:8px">
+      <select id="filtro-usuario" style="width:100%">
+        <option value="">Todas las personas</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" style="margin-bottom:0;margin-top:10px" onclick="cargarHistorial()">🔍 Filtrar</button>
+  </div>
+
+  <div class="card">
+    <div id="historial-lista">Cargando...</div>
+  </div>
+</div>
+
+<!-- ══════════ MI VISTA ══════════ -->
+<div class="section" id="tab-yo">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+    <div>
+      <div style="font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:0.05em">Vista de</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#a78bfa" id="yo-nombre">—</div>
+    </div>
+    <button onclick="cambiarUsuario()" style="background:#2d2060;border:1px solid #a78bfa;color:#a78bfa;border-radius:20px;padding:6px 12px;font-size:0.75rem;cursor:pointer">
+      Cambiar 🔄
+    </button>
+  </div>
+
+  <div class="summary-row">
+    <div class="summary-box">
+      <div class="label">Ingresos</div>
+      <div class="amount green" id="yo-ingresos">—</div>
+    </div>
+    <div class="summary-box">
+      <div class="label">Gastos</div>
+      <div class="amount red" id="yo-gastos">—</div>
+    </div>
+    <div class="summary-box">
+      <div class="label">Neto</div>
+      <div class="amount purple" id="yo-neto">—</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Mis gastos por área (mes actual)</div>
+    <div id="yo-areas-chart">Cargando...</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Mis últimos movimientos</div>
+    <div id="yo-ultimos">Cargando...</div>
+  </div>
+
+</div>
+
+<!-- Botón flotante gasto rápido -->
+<div class="quick-overlay" id="quick-overlay" onclick="cerrarQuick()"></div>
+<div class="quick-modal" id="quick-modal">
+  <div class="quick-title">⚡ Gasto rápido</div>
+  <div class="quick-amount-row">
+    <input type="number" id="q-importe" placeholder="0" step="1" min="0" inputmode="numeric">
+  </div>
+  <div class="form-group">
+    <label>Concepto (opcional)</label>
+    <input type="text" id="q-concepto" placeholder="ej: café, colación...">
+  </div>
+  <div class="form-group">
+    <label>Área</label>
+    <select id="q-area"><option value="">— Selecciona —</option></select>
+  </div>
+  <div class="form-group">
+    <label>👤 Usuario</label>
+    <select id="q-usuario"><option value="">— Selecciona —</option></select>
+  </div>
+  <button class="btn btn-primary" onclick="guardarGastoRapido()">💾 Guardar gasto</button>
+</div>
+
+<button class="fab" id="fab-btn" onclick="abrirQuick()" title="Gasto rápido">＋</button>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Modal Edición -->
+<div class="modal-overlay" id="modal-overlay" onclick="cerrarModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">✏️ Editar movimiento</span>
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
+    </div>
+
+    <input type="hidden" id="m-id">
+
+    <div class="type-toggle">
+      <button class="type-btn gasto" id="m-btn-gasto"   onclick="setTipoModal('GASTO')">💸 Gasto</button>
+      <button class="type-btn ingreso" id="m-btn-ingreso" onclick="setTipoModal('INGRESO')">💵 Ingreso</button>
+    </div>
+
+    <div class="ambito-toggle">
+      <button class="ambito-btn casa active" id="m-btn-casa"     onclick="setAmbitoModal('casa')">🏠 Casa</button>
+      <button class="ambito-btn personal"    id="m-btn-personal" onclick="setAmbitoModal('personal')">🐾 Personal</button>
+    </div>
+
+    <div class="form-group">
+      <label>👤 Usuario</label>
+      <select id="m-usuario"><option value="">— Selecciona —</option></select>
+    </div>
+    <div class="form-group">
+      <label>Importe ($CLP)</label>
+      <input type="number" id="m-importe" step="0.01" min="0">
+    </div>
+    <div class="form-group">
+      <label>Fecha</label>
+      <input type="date" id="m-fecha">
+    </div>
+    <div class="form-group">
+      <label>Cuenta / Banco</label>
+      <select id="m-cuenta"></select>
+    </div>
+    <div class="form-group">
+      <label>Área de gasto</label>
+      <select id="m-area" onchange="cargarCategoriasModal()"></select>
+    </div>
+    <div class="form-group">
+      <label>Categoría</label>
+      <select id="m-categoria"></select>
+    </div>
+    <div class="form-group">
+      <label>Concepto</label>
+      <input type="text" id="m-concepto">
+    </div>
+    <div class="form-group">
+      <label>Nota</label>
+      <textarea id="m-descripcion"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-delete-confirm" onclick="confirmarEliminar()">🗑 Eliminar</button>
+      <button class="btn btn-primary" onclick="guardarEdicion()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let API_URL = localStorage.getItem('api_url') || 'http://192.168.0.105:8000';
+let tipoActual  = 'GASTO';
+let esPersonal  = false;       // false=casa/compartido, true=personal
+let ambitoModal = false;       // ámbito del modal de edición
+let usuarioActual = JSON.parse(localStorage.getItem('usuario_activo') || 'null');
+// usuarioActual = { id, nombre } o null
+let estaOnline  = false;       // empieza en false hasta que se confirme
+let guardandoMovimiento = false; // flag anti-duplicado
+
+// ── Verificar conectividad real con la API ───────────────────
+// navigator.onLine solo detecta si hay internet, no si la API local
+// es alcanzable. Esta función hace un ping real al servidor.
+async function verificarConectividad() {
+  try {
+    const r = await fetch(API_URL + '/', {
+      method: 'GET',
+      signal: AbortSignal.timeout(3000) // 3 segundos máximo
+    });
+    return r.ok;
+  } catch(e) {
+    return false;
+  }
+}
+
+async function actualizarConectividad() {
+  const alcanzable = await verificarConectividad();
+  actualizarEstado(alcanzable);
+  return alcanzable;
+}
+
+// ── IndexedDB ────────────────────────────────────────────────
+const DB_NAME = 'finanzas_offline';
+const DB_VERSION = 2;
+let db;
+
+function abrirDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('pendientes')) {
+        d.createObjectStore('pendientes', { keyPath: 'id', autoIncrement: true });
+      }
+      if (!d.objectStoreNames.contains('cache')) {
+        d.createObjectStore('cache', { keyPath: 'key' });
+      }
+      // Cache completa de movimientos del servidor para uso offline
+      if (!d.objectStoreNames.contains('movimientos_cache')) {
+        const ms = d.createObjectStore('movimientos_cache', { keyPath: 'id' });
+        ms.createIndex('fecha', 'fecha');
+        ms.createIndex('mes',   'mes');
+        ms.createIndex('anio',  'anio');
+        ms.createIndex('tipo',  'tipo');
+      }
+    };
+    req.onsuccess = e => { db = e.target.result; resolve(db); };
+    req.onerror   = () => reject(req.error);
+  });
+}
+
+function guardarEnDB(store, data) {
+  return new Promise((resolve, reject) => {
+    const tx  = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).add(data);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = () => reject(req.error);
+  });
+}
+
+function obtenerTodosDB(store) {
+  return new Promise((resolve, reject) => {
+    const tx  = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = () => reject(req.error);
+  });
+}
+
+function eliminarDeDB(store, id) {
+  return new Promise((resolve, reject) => {
+    const tx  = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).delete(id);
+    req.onsuccess = () => resolve();
+    req.onerror   = () => reject(req.error);
+  });
+}
+
+function guardarCacheDB(key, value) {
+  return new Promise((resolve, reject) => {
+    const tx  = db.transaction('cache', 'readwrite');
+    const req = tx.objectStore('cache').put({ key, value });
+    req.onsuccess = () => resolve();
+    req.onerror   = () => reject(req.error);
+  });
+}
+
+function obtenerCacheDB(key) {
+  return new Promise((resolve, reject) => {
+    const tx  = db.transaction('cache', 'readonly');
+    const req = tx.objectStore('cache').get(key);
+    req.onsuccess = () => resolve(req.result ? req.result.value : null);
+    req.onerror   = () => reject(req.error);
+  });
+}
+
+// ── Cache completa de movimientos ────────────────────────────
+// Guarda/actualiza un array de movimientos del servidor en IndexedDB
+function guardarMovimientosCache(movimientos) {
+  return new Promise((resolve, reject) => {
+    const tx    = db.transaction('movimientos_cache', 'readwrite');
+    const store = tx.objectStore('movimientos_cache');
+    movimientos.forEach(m => store.put(m));
+    tx.oncomplete = () => resolve();
+    tx.onerror    = () => reject(tx.error);
+  });
+}
+
+// Obtiene movimientos de la cache local con filtros opcionales
+function obtenerMovimientosCache({ mes, anio, tipo, usuarioId, limit } = {}) {
+  return new Promise((resolve, reject) => {
+    const tx    = db.transaction('movimientos_cache', 'readonly');
+    const store = tx.objectStore('movimientos_cache');
+    const req   = store.getAll();
+    req.onsuccess = () => {
+      let data = req.result || [];
+      // Aplica los mismos filtros que la API
+      if (anio)      data = data.filter(m => new Date(m.fecha).getFullYear() === anio);
+      if (mes)       data = data.filter(m => new Date(m.fecha).getMonth() + 1 === mes);
+      if (tipo)      data = data.filter(m => m.tipo === tipo);
+      if (usuarioId) data = data.filter(m => m.usuario_id === usuarioId);
+      // Ordena por fecha descendente
+      data.sort((a, b) => b.fecha.localeCompare(a.fecha));
+      if (limit) data = data.slice(0, limit);
+      resolve(data);
+    };
+    req.onerror = () => reject(req.error);
+  });
+}
+
+// Elimina movimientos de la cache local (al borrar del servidor)
+function eliminarMovimientoCache(id) {
+  return new Promise((resolve, reject) => {
+    const tx  = db.transaction('movimientos_cache', 'readwrite');
+    const req = tx.objectStore('movimientos_cache').delete(id);
+    req.onsuccess = () => resolve();
+    req.onerror   = () => reject(req.error);
+  });
+}
+
+// ── Estado online/offline ────────────────────────────────────
+function actualizarEstado(apiAlcanzable) {
+  estaOnline = apiAlcanzable;
+  const bar  = document.getElementById('status-bar');
+  const text = document.getElementById('status-text');
+  const btn  = document.getElementById('sync-btn');
+  if (apiAlcanzable) {
+    bar.className = 'status-bar online';
+    text.textContent = 'Conectado';
+    btn.style.display = 'none';
+    sincronizarPendientes();
+  } else {
+    bar.className = 'status-bar offline';
+    // Distingue si hay internet (3G) o no hay red en absoluto
+    if (navigator.onLine) {
+      text.textContent = '⚠️ Fuera del WiFi — guardando localmente';
+    } else {
+      text.textContent = 'Sin conexión';
+    }
+    actualizarContadorPendientes();
+  }
+}
+
+async function actualizarContadorPendientes() {
+  const pendientes = await obtenerTodosDB('pendientes');
+  const btn  = document.getElementById('sync-btn');
+  const text = document.getElementById('status-text');
+  const prefijo = navigator.onLine ? '⚠️ Fuera del WiFi' : 'Sin conexión';
+  if (pendientes.length > 0) {
+    text.textContent = `${prefijo} · ${pendientes.length} pendiente${pendientes.length > 1 ? 's' : ''}`;
+    btn.style.display = 'inline-block';
+  } else {
+    text.textContent = prefijo;
+    btn.style.display = 'none';
+  }
+}
+
+// Verifica conectividad cada 30 segundos y al volver de background
+window.addEventListener('online',  () => actualizarConectividad());
+window.addEventListener('offline', () => actualizarEstado(false));
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') actualizarConectividad();
+});
+
+// ── Sincronización ───────────────────────────────────────────
+async function sincronizarPendientes() {
+  if (!estaOnline) return;
+  const pendientes = await obtenerTodosDB('pendientes');
+  if (!pendientes.length) return;
+  let sincronizados = 0;
+  for (const mov of pendientes) {
+    try {
+      const { id, ...body } = mov;
+      const r = await fetch(API_URL + '/movimientos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (r.ok) { await eliminarDeDB('pendientes', id); sincronizados++; }
+    } catch(e) { break; }
+  }
+  if (sincronizados > 0) {
+    showToast(`✅ ${sincronizados} movimiento${sincronizados > 1 ? 's' : ''} sincronizado${sincronizados > 1 ? 's' : ''}`);
+    cargarResumen(); cargarUltimos(); cargarContadorDia();
+  }
+}
+
+// ── Config ──────────────────────────────────────────────────
+
+function guardarApiUrl() {
+  API_URL = document.getElementById('api-url-input').value.trim().replace(/\/$/, '');
+  localStorage.setItem('api_url', API_URL);
+  document.getElementById('config-section').style.display = 'none';
+  showToast('URL guardada ✅');
+  inicializar();
+}
+
+// ── Utils ────────────────────────────────────────────────────
+function showTab(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+  if (name === 'historial') cargarHistorial();
+  if (name === 'yo') cargarVistaYo();
+}
+
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => t.className = 'toast', 2500);
+}
+
+function fmt(n) {
+  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(n);
+}
+
+async function api(path) {
+  const r = await fetch(API_URL + path);
+  if (!r.ok) throw new Error(r.statusText);
+  return r.json();
+}
+
+async function apiPost(path, body) {
+  const r = await fetch(API_URL + path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+// ── Tipo toggle ──────────────────────────────────────────────
+function setTipo(tipo) {
+  tipoActual = tipo;
+  document.getElementById('btn-gasto').className   = 'type-btn gasto'   + (tipo === 'GASTO'   ? ' active' : '');
+  document.getElementById('btn-ingreso').className = 'type-btn ingreso' + (tipo === 'INGRESO' ? ' active' : '');
+}
+
+// ── Ámbito toggle (Casa / Personal) ──────────────────────────
+function setAmbito(ambito) {
+  esPersonal = (ambito === 'personal');
+  document.getElementById('btn-casa').className     = 'ambito-btn casa'     + (!esPersonal ? ' active' : '');
+  document.getElementById('btn-personal').className = 'ambito-btn personal' + ( esPersonal ? ' active' : '');
+}
+
+function setAmbitoModal(ambito) {
+  ambitoModal = (ambito === 'personal');
+  document.getElementById('m-btn-casa').className     = 'ambito-btn casa'     + (!ambitoModal ? ' active' : '');
+  document.getElementById('m-btn-personal').className = 'ambito-btn personal' + ( ambitoModal ? ' active' : '');
+}
+
+// ── Cargar catálogos ─────────────────────────────────────────
+async function cargarCuentas() {
+  const sel = document.getElementById('f-cuenta');
+  try {
+    const data = await api('/cuentas');
+    await guardarCacheDB('cuentas', data);
+    sel.innerHTML = data.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+  } catch(e) {
+    const cached = await obtenerCacheDB('cuentas');
+    if (cached) sel.innerHTML = cached.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+    else sel.innerHTML = '<option value="">Sin conexión</option>';
+  }
+}
+
+async function cargarUsuarios() {
+  try {
+    const data = await api('/usuarios');
+    await guardarCacheDB('usuarios', data);
+    const opts = data.map(u => `<option value="${u.id}">${u.nombre}</option>`).join('');
+    document.getElementById('f-usuario').innerHTML = '<option value="">— ¿Quién eres? —</option>' + opts;
+    // también llena el filtro del historial
+    const filtro = document.getElementById('filtro-usuario');
+    filtro.innerHTML = '<option value="">Todas las personas</option>' + opts;
+  } catch(e) {
+    const cached = await obtenerCacheDB('usuarios');
+    if (cached) {
+      const opts = cached.map(u => `<option value="${u.id}">${u.nombre}</option>`).join('');
+      document.getElementById('f-usuario').innerHTML = '<option value="">— ¿Quién eres? —</option>' + opts;
+      document.getElementById('filtro-usuario').innerHTML = '<option value="">Todas las personas</option>' + opts;
+    }
+  }
+}
+
+async function cargarAreas() {
+  const sel = document.getElementById('f-area');
+  try {
+    const data = await api('/areas');
+    await guardarCacheDB('areas', data);
+    sel.innerHTML = '<option value="">— Selecciona —</option>' +
+      data.map(a => `<option value="${a.id}">${a.nombre}</option>`).join('');
+  } catch(e) {
+    const cached = await obtenerCacheDB('areas');
+    if (cached) sel.innerHTML = '<option value="">— Selecciona —</option>' +
+      cached.map(a => `<option value="${a.id}">${a.nombre}</option>`).join('');
+  }
+}
+
+async function cargarCategorias() {
+  const areaId = document.getElementById('f-area').value;
+  const sel = document.getElementById('f-categoria');
+  if (!areaId) { sel.innerHTML = '<option value="">— Selecciona área primero —</option>'; return; }
+  try {
+    const data = await api(`/categorias?area_id=${areaId}`);
+    await guardarCacheDB(`categorias_${areaId}`, data);
+    sel.innerHTML = '<option value="">— Selecciona —</option>' +
+      data.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+  } catch(e) {
+    const cached = await obtenerCacheDB(`categorias_${areaId}`);
+    if (cached) sel.innerHTML = '<option value="">— Selecciona —</option>' +
+      cached.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+  }
+}
+
+// ── Inicio: resumen ──────────────────────────────────────────
+async function cargarResumen() {
+  const now = new Date();
+  try {
+    const data = await api(`/resumen/mensual?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&es_personal=0`);
+    document.getElementById('sum-ingresos').textContent = fmt(data.ingresos);
+    document.getElementById('sum-gastos').textContent   = fmt(data.gastos);
+    document.getElementById('sum-neto').textContent     = fmt(data.neto);
+  } catch(e) {
+    ['sum-ingresos','sum-gastos','sum-neto'].forEach(id => document.getElementById(id).textContent = '—');
+  }
+}
+
+async function cargarAreasResumen() {
+  const now = new Date();
+  const el = document.getElementById('areas-chart');
+  try {
+    const data = await api(`/resumen/por-area?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&es_personal=0`);
+    if (!data.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin datos este mes</p>'; return; }
+    const max = Math.max(...data.map(d => d.total));
+    el.innerHTML = data.map(d => `
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:3px">
+          <span>${d.area}</span><span style="color:#f87171">${fmt(d.total)}</span>
+        </div>
+        <div style="background:#12122a;border-radius:4px;height:6px">
+          <div style="background:linear-gradient(90deg,#7c3aed,#f87171);border-radius:4px;height:6px;width:${(d.total/max*100).toFixed(1)}%"></div>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Error cargando datos</p>'; }
+}
+
+async function cargarUltimos() {
+  const el = document.getElementById('ultimos-movimientos');
+  try {
+    const data = await api('/movimientos?limit=50&es_personal=0');
+    // Guarda en cache para uso offline
+    if (data.length) await guardarMovimientosCache(data);
+    const ultimos = data.slice(0, 6);
+    if (!ultimos.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin movimientos</p>'; return; }
+    el.innerHTML = '';
+    ultimos.forEach(m => el.appendChild(buildTxItem(m, 'server')));
+  } catch(e) {
+    // Offline: combina cache del servidor + pendientes locales
+    const [cachedAll, pendientesAll] = await Promise.all([
+      obtenerMovimientosCache({ limit: 50 }),
+      obtenerTodosDB('pendientes')
+    ]);
+    // Solo casa (es_personal=0) en Inicio
+    const cached    = cachedAll.filter(m => !m.es_personal);
+    const pendientes = pendientesAll.filter(p => !p.es_personal);
+    const pendientesConFlag = pendientes.map(p => ({ ...p, _offline: true }));
+    const todos = [...pendientesConFlag, ...cached].slice(0, 6);
+    if (!todos.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin datos guardados</p>'; return; }
+    if (pendientes.length) {
+      el.innerHTML = '<p style="color:#f59e0b;font-size:0.75rem;margin-bottom:8px">📴 Mostrando datos locales · ' + pendientes.length + ' pendiente(s) de sync</p>';
+    } else {
+      el.innerHTML = '<p style="color:#888;font-size:0.75rem;margin-bottom:8px">📴 Mostrando última caché guardada</p>';
+    }
+    todos.forEach(m => el.appendChild(buildTxItem(m, m._offline ? 'offline' : 'server')));
+  }
+}
+
+// ── Guardar movimiento ───────────────────────────────────────
+async function guardarMovimiento() {
+  // Anti-duplicado: si ya hay un guardado en curso, ignora
+  if (guardandoMovimiento) return;
+  guardandoMovimiento = true;
+
+  const btnGuardar = document.querySelector('[onclick="guardarMovimiento()"]');
+  if (btnGuardar) { btnGuardar.disabled = true; btnGuardar.textContent = '⏳ Guardando...'; }
+
+  try {
+    const importe  = parseFloat(document.getElementById('f-importe').value);
+    const fecha    = document.getElementById('f-fecha').value;
+    const cuentaId = parseInt(document.getElementById('f-cuenta').value);
+
+    if (!importe || !fecha || !cuentaId) {
+      showToast('Completa importe, fecha y cuenta ❌', true);
+      return;
+    }
+
+    const body = {
+      cuenta_id:    cuentaId,
+      fecha:        fecha,
+      concepto:     document.getElementById('f-concepto').value || null,
+      importe:      tipoActual === 'GASTO' ? -Math.abs(importe) : Math.abs(importe),
+      area_id:      parseInt(document.getElementById('f-area').value) || null,
+      categoria_id: parseInt(document.getElementById('f-categoria').value) || null,
+      tipo:         tipoActual,
+      descripcion:  document.getElementById('f-descripcion').value || null,
+      usuario_id:   esPersonal && usuarioActual ? usuarioActual.id : null,
+      es_personal:  esPersonal ? 1 : 0
+    };
+
+    // Verifica conectividad real (no solo navigator.onLine)
+    const apiAlcanzable = await verificarConectividad();
+    actualizarEstado(apiAlcanzable);
+
+    if (apiAlcanzable) {
+      try {
+        await apiPost('/movimientos', body);
+        showToast('Movimiento guardado ✅');
+        cargarResumen(); cargarUltimos();
+      } catch(e) {
+        await guardarEnDB('pendientes', body);
+        showToast('⚠️ Error al guardar, guardado localmente');
+        actualizarContadorPendientes();
+      }
+    } else {
+      await guardarEnDB('pendientes', body);
+      const msg = navigator.onLine
+        ? '📴 Fuera del WiFi, guardado localmente'
+        : '📴 Sin conexión, guardado localmente';
+      showToast(msg);
+      actualizarContadorPendientes();
+      cargarUltimos();
+    }
+
+    // Limpiar form y resetear ámbito a Casa (default)
+    ['f-importe','f-concepto','f-descripcion'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f-area').value = '';
+    document.getElementById('f-categoria').innerHTML = '<option value="">— Selecciona área primero —</option>';
+    setAmbito('casa'); // vuelve a Casa por defecto
+
+  } finally {
+    // Siempre restaura el botón al terminar, sin importar si hubo error
+    guardandoMovimiento = false;
+    if (btnGuardar) { btnGuardar.disabled = false; btnGuardar.textContent = '💾 Guardar movimiento'; }
+  }
+}
+
+// ── Swipe para editar/eliminar ───────────────────────────────
+let swipeStartX = 0;
+let swipeEl = null;
+let swipeOpened = null; // wrapper actualmente abierto
+
+function buildTxItem(m, context = 'server') {
+  // context: 'server' (tiene id) | 'offline' (no tiene id de server)
+  const wrapper = document.createElement('div');
+  wrapper.className = 'tx-wrapper';
+  wrapper.innerHTML = `
+    <div class="tx-actions">
+      ${context === 'server' ? `
+        <button class="tx-action-btn tx-btn-edit" onclick="abrirModal(${m.id})">✏️<span>Editar</span></button>
+        <button class="tx-action-btn tx-btn-delete" onclick="eliminarDirecto(${m.id}, this)">🗑<span>Borrar</span></button>
+      ` : `<button class="tx-action-btn tx-btn-delete" onclick="this.closest('.tx-wrapper').remove()">🗑<span>Borrar</span></button>`}
+    </div>
+    <div class="tx-item">
+      <div class="tx-icon ${m.tipo.toLowerCase()}">${m.tipo === 'GASTO' ? '💸' : '💵'}</div>
+      <div class="tx-info">
+        <div class="tx-concepto">${m.concepto || m.area || '—'} <span style="font-size:0.7rem;opacity:0.6">${m.es_personal ? '🐾' : '🏠'}</span></div>
+        <div class="tx-meta">${m.fecha} · ${m.cuenta || 'pendiente'}${m.usuario ? ' · 👤 ' + m.usuario : ''}</div>
+      </div>
+      <div class="tx-amount ${m.tipo === 'GASTO' ? 'red' : 'green'}">${fmt(Math.abs(m.importe))}</div>
+    </div>
+  `;
+
+  const item = wrapper.querySelector('.tx-item');
+  const actionW = context === 'server' ? 128 : 64; // ancho de los botones
+
+  item.addEventListener('touchstart', e => {
+    swipeStartX = e.touches[0].clientX;
+    swipeEl = item;
+  }, { passive: true });
+
+  item.addEventListener('touchmove', e => {
+    const dx = e.touches[0].clientX - swipeStartX;
+    if (dx < 0) item.style.transform = `translateX(${Math.max(dx, -actionW)}px)`;
+    else if (swipeOpened === wrapper) item.style.transform = `translateX(${Math.min(dx - actionW, 0)}px)`;
+  }, { passive: true });
+
+  item.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - swipeStartX;
+    if (dx < -40) {
+      item.style.transform = `translateX(-${actionW}px)`;
+      if (swipeOpened && swipeOpened !== wrapper) cerrarSwipe(swipeOpened);
+      swipeOpened = wrapper;
+    } else {
+      item.style.transform = 'translateX(0)';
+      swipeOpened = null;
+    }
+  });
+
+  return wrapper;
+}
+
+function cerrarSwipe(wrapper) {
+  if (!wrapper) return;
+  const item = wrapper.querySelector('.tx-item');
+  if (item) item.style.transform = 'translateX(0)';
+}
+
+// ── Modal edición ────────────────────────────────────────────
+let tipoModal = 'GASTO';
+let movActual = null;
+
+function setTipoModal(tipo) {
+  tipoModal = tipo;
+  document.getElementById('m-btn-gasto').className   = 'type-btn gasto'   + (tipo === 'GASTO'   ? ' active' : '');
+  document.getElementById('m-btn-ingreso').className = 'type-btn ingreso' + (tipo === 'INGRESO' ? ' active' : '');
+}
+
+async function abrirModal(movId) {
+  // Cierra swipe abierto
+  if (swipeOpened) { cerrarSwipe(swipeOpened); swipeOpened = null; }
+
+  try {
+    const data = await api(`/movimientos?id=${movId}&limit=1`);
+    // Busca por id en la lista (la API devuelve array)
+    const mov = Array.isArray(data) ? data.find(m => m.id === movId) : data;
+    if (!mov) { showToast('No se pudo cargar el registro ❌', true); return; }
+    movActual = mov;
+  } catch(e) { showToast('Error al cargar ❌', true); return; }
+
+  // Llena modal con datos actuales
+  document.getElementById('m-id').value         = movActual.id;
+  document.getElementById('m-importe').value    = Math.abs(movActual.importe);
+  document.getElementById('m-fecha').value      = movActual.fecha;
+  document.getElementById('m-concepto').value   = movActual.concepto || '';
+  document.getElementById('m-descripcion').value = movActual.descripcion || '';
+  setTipoModal(movActual.tipo);
+  setAmbitoModal(movActual.es_personal ? 'personal' : 'casa');
+
+  // Carga selects desde cache
+  const cuentas  = await obtenerCacheDB('cuentas')  || [];
+  const areas    = await obtenerCacheDB('areas')     || [];
+  const usuarios = await obtenerCacheDB('usuarios')  || [];
+
+  document.getElementById('m-cuenta').innerHTML =
+    cuentas.map(c => `<option value="${c.id}" ${c.nombre === movActual.cuenta ? 'selected' : ''}>${c.nombre}</option>`).join('');
+  document.getElementById('m-area').innerHTML =
+    '<option value="">— Selecciona —</option>' +
+    areas.map(a => `<option value="${a.id}" ${a.nombre === movActual.area ? 'selected' : ''}>${a.nombre}</option>`).join('');
+  document.getElementById('m-usuario').innerHTML =
+    '<option value="">— Selecciona —</option>' +
+    usuarios.map(u => `<option value="${u.id}" ${u.nombre === movActual.usuario ? 'selected' : ''}>${u.nombre}</option>`).join('');
+
+  await cargarCategoriasModal();
+
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+async function cargarCategoriasModal() {
+  const areaId = document.getElementById('m-area').value;
+  const sel = document.getElementById('m-categoria');
+  if (!areaId) { sel.innerHTML = '<option value="">— Selecciona área primero —</option>'; return; }
+  try {
+    const data = await api(`/categorias?area_id=${areaId}`);
+    await guardarCacheDB(`categorias_${areaId}`, data);
+    sel.innerHTML = '<option value="">— Selecciona —</option>' +
+      data.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+  } catch(e) {
+    const cached = await obtenerCacheDB(`categorias_${areaId}`);
+    if (cached) sel.innerHTML = '<option value="">— Selecciona —</option>' +
+      cached.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+  }
+}
+
+function cerrarModal(e) {
+  if (e && e.target !== document.getElementById('modal-overlay')) return;
+  document.getElementById('modal-overlay').classList.remove('show');
+  movActual = null;
+}
+
+async function guardarEdicion() {
+  const id = parseInt(document.getElementById('m-id').value);
+  const importe = parseFloat(document.getElementById('m-importe').value);
+  if (!importe) { showToast('Ingresa un importe ❌', true); return; }
+
+  const body = {
+    cuenta_id:    parseInt(document.getElementById('m-cuenta').value),
+    fecha:        document.getElementById('m-fecha').value,
+    concepto:     document.getElementById('m-concepto').value || null,
+    importe:      tipoModal === 'GASTO' ? -Math.abs(importe) : Math.abs(importe),
+    area_id:      parseInt(document.getElementById('m-area').value) || null,
+    categoria_id: parseInt(document.getElementById('m-categoria').value) || null,
+    tipo:         tipoModal,
+    descripcion:  document.getElementById('m-descripcion').value || null,
+    usuario_id:   ambitoModal && usuarioActual ? usuarioActual.id : (parseInt(document.getElementById('m-usuario').value) || null),
+    es_personal:  ambitoModal ? 1 : 0
+  };
+
+  try {
+    const r = await fetch(API_URL + `/movimientos/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) throw new Error();
+    showToast('Movimiento actualizado ✅');
+    document.getElementById('modal-overlay').classList.remove('show');
+    cargarResumen(); cargarUltimos(); cargarContadorDia();
+    if (document.getElementById('tab-historial').classList.contains('active')) cargarHistorial();
+  } catch(e) { showToast('Error al actualizar ❌', true); }
+}
+
+async function eliminarDirecto(movId, btn) {
+  if (!confirm('¿Eliminar este movimiento?')) return;
+  try {
+    const r = await fetch(API_URL + `/movimientos/${movId}`, { method: 'DELETE' });
+    if (!r.ok) throw new Error();
+    await eliminarMovimientoCache(movId); // también limpia la cache local
+    btn.closest('.tx-wrapper').remove();
+    showToast('Eliminado ✅');
+    cargarResumen(); cargarContadorDia();
+    if (document.getElementById('tab-historial').classList.contains('active')) cargarHistorial();
+  } catch(e) { showToast('Error al eliminar ❌', true); }
+}
+
+async function confirmarEliminar() {
+  const id = parseInt(document.getElementById('m-id').value);
+  if (!confirm('¿Eliminar este movimiento?')) return;
+  try {
+    const r = await fetch(API_URL + `/movimientos/${id}`, { method: 'DELETE' });
+    if (!r.ok) throw new Error();
+    await eliminarMovimientoCache(id); // también limpia la cache local
+    showToast('Eliminado ✅');
+    document.getElementById('modal-overlay').classList.remove('show');
+    cargarResumen(); cargarUltimos(); cargarContadorDia();
+    if (document.getElementById('tab-historial').classList.contains('active')) cargarHistorial();
+  } catch(e) { showToast('Error al eliminar ❌', true); }
+}
+
+// ── Contador gastos del día ─────────────────────────────────
+async function cargarContadorDia() {
+  const hoy = new Date().toISOString().split('T')[0];
+  try {
+    const now = new Date();
+    const data = await api(`/movimientos?mes=${now.getMonth()+1}&anio=${now.getFullYear()}&tipo=GASTO&es_personal=0&limit=200`);
+    const hoyData = data.filter(m => m.fecha === hoy);
+    const total = hoyData.reduce((s, m) => s + Math.abs(m.importe), 0);
+    document.getElementById('day-total').textContent = fmt(total);
+    document.getElementById('day-count').textContent = `${hoyData.length} movimiento${hoyData.length !== 1 ? 's' : ''}`;
+  } catch(e) {
+    // Offline: cuenta pendientes de hoy
+    const pendientes = await obtenerTodosDB('pendientes');
+    const hoyPend = pendientes.filter(m => m.fecha === hoy && m.tipo === 'GASTO');
+    const total = hoyPend.reduce((s, m) => s + Math.abs(m.importe), 0);
+    document.getElementById('day-total').textContent = total > 0 ? fmt(total) : '—';
+    document.getElementById('day-count').textContent = hoyPend.length > 0 ? `${hoyPend.length} local${hoyPend.length !== 1 ? 'es' : ''}` : 'Sin conexión';
+  }
+}
+
+// ── Gasto rápido ─────────────────────────────────────────────
+async function abrirQuick() {
+  // Carga areas y usuarios desde cache si no están
+  const areas    = await obtenerCacheDB('areas') || [];
+  const usuarios = await obtenerCacheDB('usuarios') || [];
+  document.getElementById('q-area').innerHTML =
+    '<option value="">— Selecciona —</option>' +
+    areas.map(a => `<option value="${a.id}">${a.nombre}</option>`).join('');
+  document.getElementById('q-usuario').innerHTML =
+    '<option value="">— Selecciona —</option>' +
+    usuarios.map(u => `<option value="${u.id}">${u.nombre}</option>`).join('');
+
+  document.getElementById('quick-modal').classList.add('show');
+  document.getElementById('quick-overlay').classList.add('show');
+  setTimeout(() => document.getElementById('q-importe').focus(), 300);
+}
+
+function cerrarQuick() {
+  document.getElementById('quick-modal').classList.remove('show');
+  document.getElementById('quick-overlay').classList.remove('show');
+}
+
+async function guardarGastoRapido() {
+  const importe = parseFloat(document.getElementById('q-importe').value);
+  if (!importe || importe <= 0) { showToast('Ingresa un importe ❌', true); return; }
+
+  // Usa la primera cuenta disponible por defecto
+  const cuentas = await obtenerCacheDB('cuentas') || [];
+  if (!cuentas.length) { showToast('Sin cuentas disponibles ❌', true); return; }
+
+  const body = {
+    cuenta_id:    cuentas[0].id,
+    fecha:        new Date().toISOString().split('T')[0],
+    concepto:     document.getElementById('q-concepto').value || null,
+    importe:      -Math.abs(importe),
+    area_id:      parseInt(document.getElementById('q-area').value) || null,
+    categoria_id: null,
+    tipo:         'GASTO',
+    descripcion:  null,
+    usuario_id:   parseInt(document.getElementById('q-usuario').value) || null
+  };
+
+  const apiAlcanzable = await verificarConectividad();
+  if (apiAlcanzable) {
+    try {
+      await apiPost('/movimientos', body);
+      showToast('⚡ Gasto guardado ✅');
+      cargarResumen(); cargarUltimos(); cargarContadorDia();
+    } catch(e) {
+      await guardarEnDB('pendientes', body);
+      showToast('📴 Guardado localmente');
+      actualizarContadorPendientes(); cargarContadorDia();
+    }
+  } else {
+    await guardarEnDB('pendientes', body);
+    showToast(navigator.onLine ? '📴 Fuera del WiFi, guardado localmente' : '📴 Sin conexión, guardado localmente');
+    actualizarContadorPendientes(); cargarContadorDia();
+  }
+
+  // Limpiar y cerrar
+  document.getElementById('q-importe').value  = '';
+  document.getElementById('q-concepto').value = '';
+  document.getElementById('q-area').value     = '';
+  cerrarQuick();
+}
+
+// ── Historial ────────────────────────────────────────────────
+async function cargarHistorial() {
+  const tipo      = document.getElementById('filtro-tipo').value;
+  const mes       = document.getElementById('filtro-mes').value;
+  const usuarioId = parseInt(document.getElementById('filtro-usuario').value) || null;
+  const now  = new Date();
+  const el   = document.getElementById('historial-lista');
+
+  let url = `/movimientos?limit=200&anio=${now.getFullYear()}`;
+  if (tipo)      url += `&tipo=${tipo}`;
+  if (mes)       url += `&mes=${mes}`;
+  if (usuarioId) url += `&usuario_id=${usuarioId}`;
+
+  try {
+    const data = await api(url);
+    // Guarda todo en cache cada vez que hay conexión
+    if (data.length) await guardarMovimientosCache(data);
+    if (!data.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin resultados</p>'; return; }
+    el.innerHTML = '';
+    data.forEach(m => el.appendChild(buildTxItem(m, 'server')));
+  } catch(e) {
+    // Offline: lee desde cache local con filtros
+    const cached = await obtenerMovimientosCache({
+      anio:      now.getFullYear(),
+      mes:       mes       ? parseInt(mes)       : null,
+      tipo:      tipo      ? tipo                : null,
+      usuarioId: usuarioId ? usuarioId           : null,
+      limit:     200
+    });
+
+    // Agrega también los pendientes locales que coincidan con los filtros
+    const pendientes = await obtenerTodosDB('pendientes');
+    let pendFiltrados = pendientes;
+    if (tipo)      pendFiltrados = pendFiltrados.filter(p => p.tipo === tipo);
+    if (mes)       pendFiltrados = pendFiltrados.filter(p => new Date(p.fecha).getMonth() + 1 === parseInt(mes));
+    if (usuarioId) pendFiltrados = pendFiltrados.filter(p => p.usuario_id === usuarioId);
+
+    const todos = [
+      ...pendFiltrados.map(p => ({ ...p, _offline: true })).reverse(),
+      ...cached
+    ];
+
+    if (!todos.length) {
+      el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin datos en caché para estos filtros</p>';
+      return;
+    }
+    el.innerHTML = '';
+    if (pendFiltrados.length) {
+      const aviso = document.createElement('p');
+      aviso.style.cssText = 'color:#f59e0b;font-size:0.75rem;margin-bottom:8px';
+      aviso.textContent = `📴 ${pendFiltrados.length} pendiente(s) de sync · mostrando caché local`;
+      el.appendChild(aviso);
+    } else {
+      const aviso = document.createElement('p');
+      aviso.style.cssText = 'color:#888;font-size:0.75rem;margin-bottom:8px';
+      aviso.textContent = '📴 Sin conexión · mostrando última caché guardada';
+      el.appendChild(aviso);
+    }
+    todos.forEach(m => el.appendChild(buildTxItem(m, m._offline ? 'offline' : 'server')));
+  }
+}
+
+// ── Bienvenida y selección de usuario ───────────────────────
+async function mostrarBienvenida() {
+  const overlay = document.getElementById('welcome-overlay');
+  const btns    = document.getElementById('welcome-btns');
+
+  // Carga usuarios (desde API o cache)
+  let usuarios = [];
+  try {
+    usuarios = await api('/usuarios');
+    await guardarCacheDB('usuarios', usuarios);
+  } catch(e) {
+    usuarios = await obtenerCacheDB('usuarios') || [];
+  }
+
+  if (!usuarios.length) {
+    // Sin usuarios configurados aún, entra directo
+    overlay.classList.add('hide');
+    setTimeout(() => overlay.style.display = 'none', 400);
+    return;
+  }
+
+  btns.innerHTML = usuarios.map(u => `
+    <button class="welcome-btn ${usuarioActual && usuarioActual.id === u.id ? 'selected' : ''}"
+      onclick="seleccionarUsuario(${u.id}, '${u.nombre}')">
+      🐾 ${u.nombre}
+    </button>
+  `).join('');
+
+  overlay.style.display = 'flex';
+}
+
+function seleccionarUsuario(id, nombre) {
+  usuarioActual = { id, nombre };
+  localStorage.setItem('usuario_activo', JSON.stringify(usuarioActual));
+
+  // Actualiza botones visualmente
+  document.querySelectorAll('.welcome-btn').forEach(b => b.classList.remove('selected'));
+  event.target.classList.add('selected');
+
+  // Cierra overlay con animación
+  const overlay = document.getElementById('welcome-overlay');
+  overlay.classList.add('hide');
+  setTimeout(() => overlay.style.display = 'none', 400);
+
+  // Actualiza la pestaña Yo si está visible
+  actualizarNombreYo();
+  if (document.getElementById('tab-yo').classList.contains('active')) {
+    cargarVistaYo();
+  }
+}
+
+function cambiarUsuario() {
+  const overlay = document.getElementById('welcome-overlay');
+  overlay.classList.remove('hide');
+  overlay.style.display = 'flex';
+  mostrarBienvenida();
+}
+
+function actualizarNombreYo() {
+  const el = document.getElementById('yo-nombre');
+  if (el) el.textContent = usuarioActual ? usuarioActual.nombre : '—';
+  // También actualiza el tab label
+  const tabBtn = document.getElementById('tab-yo-btn');
+  if (tabBtn && usuarioActual) tabBtn.textContent = `🐾 ${usuarioActual.nombre.split(' ')[0]}`;
+}
+
+// ── Vista personal ───────────────────────────────────────────
+async function cargarVistaYo() {
+  if (!usuarioActual) return;
+  const now = new Date();
+
+  actualizarNombreYo();
+  cargarResumenYo(now);
+  cargarAreasYo(now);
+  cargarUltimosYo(now);
+}
+
+async function cargarResumenYo(now) {
+  try {
+    const data = await api(`/resumen/mensual?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&usuario_id=${usuarioActual.id}&es_personal=1`);
+    document.getElementById('yo-ingresos').textContent = fmt(data.ingresos);
+    document.getElementById('yo-gastos').textContent   = fmt(data.gastos);
+    document.getElementById('yo-neto').textContent     = fmt(data.neto);
+  } catch(e) {
+    // Offline: calcula desde cache filtrando por usuario
+    try {
+      const cached = await obtenerMovimientosCache({ mes: now.getMonth()+1, anio: now.getFullYear(), limit: 500 });
+      const pendientes = await obtenerTodosDB('pendientes');
+      const todos = [...cached, ...pendientes].filter(m => m.usuario_id === usuarioActual.id && m.es_personal == 1);
+      const ingresos = todos.filter(m => m.tipo==='INGRESO').reduce((s,m) => s+Math.abs(m.importe), 0);
+      const gastos   = todos.filter(m => m.tipo==='GASTO').reduce((s,m) => s+Math.abs(m.importe), 0);
+      document.getElementById('yo-ingresos').textContent = fmt(ingresos);
+      document.getElementById('yo-gastos').textContent   = fmt(gastos);
+      document.getElementById('yo-neto').textContent     = fmt(ingresos - gastos);
+    } catch(e2) {
+      ['yo-ingresos','yo-gastos','yo-neto'].forEach(id => document.getElementById(id).textContent = '—');
+    }
+  }
+}
+
+async function cargarAreasYo(now) {
+  const el = document.getElementById('yo-areas-chart');
+  try {
+    const data = await api(`/resumen/por-area?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&usuario_id=${usuarioActual.id}&es_personal=1`);
+    if (!data.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin gastos este mes</p>'; return; }
+    const max = Math.max(...data.map(d => d.total));
+    el.innerHTML = data.map(d => `
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:3px">
+          <span>${d.area}</span><span style="color:#f87171">${fmt(d.total)}</span>
+        </div>
+        <div style="background:#12122a;border-radius:4px;height:6px">
+          <div style="background:linear-gradient(90deg,#7c3aed,#f87171);border-radius:4px;height:6px;width:${(d.total/max*100).toFixed(1)}%"></div>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    // Offline: calcula desde cache
+    try {
+      const cached = await obtenerMovimientosCache({ mes: now.getMonth()+1, anio: now.getFullYear(), tipo: 'GASTO', limit: 500 });
+      const mios = cached.filter(m => m.usuario_id === usuarioActual.id && m.es_personal == 1);
+      if (!mios.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin datos en caché</p>'; return; }
+      const porArea = {};
+      mios.forEach(m => { if (m.area) porArea[m.area] = (porArea[m.area]||0) + Math.abs(m.importe); });
+      const max = Math.max(...Object.values(porArea));
+      el.innerHTML = Object.entries(porArea).sort((a,b)=>b[1]-a[1]).map(([area, total]) => `
+        <div style="margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:3px">
+            <span>${area}</span><span style="color:#f87171">${fmt(total)}</span>
+          </div>
+          <div style="background:#12122a;border-radius:4px;height:6px">
+            <div style="background:linear-gradient(90deg,#7c3aed,#f87171);border-radius:4px;height:6px;width:${(total/max*100).toFixed(1)}%"></div>
+          </div>
+        </div>
+      `).join('');
+    } catch(e2) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin conexión</p>'; }
+  }
+}
+
+async function cargarUltimosYo(now) {
+  const el = document.getElementById('yo-ultimos');
+  try {
+    const data = await api(`/movimientos?limit=20&anio=${now.getFullYear()}&usuario_id=${usuarioActual.id}&es_personal=1`);
+    if (!data.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin movimientos</p>'; return; }
+    if (data.length) await guardarMovimientosCache(data);
+    el.innerHTML = '';
+    data.forEach(m => el.appendChild(buildTxItem(m, 'server')));
+  } catch(e) {
+    const cached = await obtenerMovimientosCache({ anio: now.getFullYear(), limit: 20 });
+    const mios = cached.filter(m => m.usuario_id === usuarioActual.id && m.es_personal == 1);
+    const pendientes = (await obtenerTodosDB('pendientes')).filter(p => p.usuario_id === usuarioActual.id && p.es_personal == 1);
+    const todos = [...pendientes.map(p=>({...p,_offline:true})).reverse(), ...mios];
+    if (!todos.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin datos en caché</p>'; return; }
+    el.innerHTML = '';
+    todos.forEach(m => el.appendChild(buildTxItem(m, m._offline ? 'offline' : 'server')));
+  }
+}
+
+// ── Init ─────────────────────────────────────────────────────
+async function inicializar() {
+  await abrirDB();
+
+  document.getElementById('f-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('header-fecha').textContent =
+    new Date().toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' });
+
+  if (!API_URL) {
+    document.getElementById('config-section').style.display = 'block';
+    // Oculta welcome si no hay API configurada
+    document.getElementById('welcome-overlay').style.display = 'none';
+    return;
+  }
+
+  // Muestra bienvenida si no hay usuario guardado, si lo hay la oculta directo
+  if (!usuarioActual) {
+    await mostrarBienvenida();
+  } else {
+    document.getElementById('welcome-overlay').style.display = 'none';
+    actualizarNombreYo();
+  }
+
+  // PASO 1 — Muestra caché inmediatamente
+  cargarCuentas();
+  cargarUsuarios();
+  cargarAreas();
+  cargarUltimos();
+  cargarContadorDia();
+
+  // PASO 2 — Conectividad en paralelo
+  actualizarConectividad().then(hayConexion => {
+    if (hayConexion) {
+      cargarResumen();
+      cargarAreasResumen();
+      cargarUltimos();
+      cargarContadorDia();
+    } else {
+      cargarResumenOffline();
+    }
+  });
+
+  setInterval(actualizarConectividad, 30000);
+}
+
+inicializar();
+</script>
+</body>
+</html>
