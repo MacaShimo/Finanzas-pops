@@ -99,21 +99,6 @@
 
     /* Tipo toggle */
     .type-toggle { display: flex; gap: 8px; margin-bottom: 14px; }
-
-    /* Ámbito toggle (Casa / Personal) */
-    .ambito-toggle {
-      display: flex; gap: 0; margin-bottom: 14px;
-      border-radius: 10px; overflow: hidden;
-      border: 1px solid #2a2a5a;
-    }
-    .ambito-btn {
-      flex: 1; padding: 10px 8px;
-      background: #12122a; color: #666;
-      border: none; font-size: 0.85rem; font-weight: 600;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .ambito-btn.active.casa     { background: #1a2a4a; color: #60a5fa; }
-    .ambito-btn.active.personal { background: #2a1a4a; color: #a78bfa; }
     .type-btn {
       flex: 1; padding: 10px;
       border-radius: 8px; border: 1px solid #2a2a5a;
@@ -462,9 +447,9 @@
       <button class="type-btn ingreso"      id="btn-ingreso" onclick="setTipo('INGRESO')">💵 Ingreso</button>
     </div>
 
-    <div class="ambito-toggle">
-      <button class="ambito-btn casa active" id="btn-casa"     onclick="setAmbito('casa')">🏠 Casa</button>
-      <button class="ambito-btn personal"    id="btn-personal" onclick="setAmbito('personal')">🐾 Personal</button>
+    <div class="form-group">
+      <label>👤 ¿Quién registra?</label>
+      <select id="f-usuario"><option value="">Cargando...</option></select>
     </div>
 
     <div class="form-group">
@@ -621,11 +606,6 @@
       <button class="type-btn ingreso" id="m-btn-ingreso" onclick="setTipoModal('INGRESO')">💵 Ingreso</button>
     </div>
 
-    <div class="ambito-toggle">
-      <button class="ambito-btn casa active" id="m-btn-casa"     onclick="setAmbitoModal('casa')">🏠 Casa</button>
-      <button class="ambito-btn personal"    id="m-btn-personal" onclick="setAmbitoModal('personal')">🐾 Personal</button>
-    </div>
-
     <div class="form-group">
       <label>👤 Usuario</label>
       <select id="m-usuario"><option value="">— Selecciona —</option></select>
@@ -667,13 +647,11 @@
 </div>
 
 <script>
-let API_URL = localStorage.getItem('api_url') || 'http://192.168.0.105:8000';
-let tipoActual  = 'GASTO';
-let esPersonal  = false;       // false=casa/compartido, true=personal
-let ambitoModal = false;       // ámbito del modal de edición
+let API_URL = localStorage.getItem('api_url') || 'https://web-production-7d6530.up.railway.app';
+let tipoActual = 'GASTO';
 let usuarioActual = JSON.parse(localStorage.getItem('usuario_activo') || 'null');
 // usuarioActual = { id, nombre } o null
-let estaOnline  = false;       // empieza en false hasta que se confirme
+let estaOnline = false;        // empieza en false hasta que se confirme
 let guardandoMovimiento = false; // flag anti-duplicado
 
 // ── Verificar conectividad real con la API ───────────────────
@@ -937,19 +915,6 @@ function setTipo(tipo) {
   document.getElementById('btn-ingreso').className = 'type-btn ingreso' + (tipo === 'INGRESO' ? ' active' : '');
 }
 
-// ── Ámbito toggle (Casa / Personal) ──────────────────────────
-function setAmbito(ambito) {
-  esPersonal = (ambito === 'personal');
-  document.getElementById('btn-casa').className     = 'ambito-btn casa'     + (!esPersonal ? ' active' : '');
-  document.getElementById('btn-personal').className = 'ambito-btn personal' + ( esPersonal ? ' active' : '');
-}
-
-function setAmbitoModal(ambito) {
-  ambitoModal = (ambito === 'personal');
-  document.getElementById('m-btn-casa').className     = 'ambito-btn casa'     + (!ambitoModal ? ' active' : '');
-  document.getElementById('m-btn-personal').className = 'ambito-btn personal' + ( ambitoModal ? ' active' : '');
-}
-
 // ── Cargar catálogos ─────────────────────────────────────────
 async function cargarCuentas() {
   const sel = document.getElementById('f-cuenta');
@@ -1017,7 +982,7 @@ async function cargarCategorias() {
 async function cargarResumen() {
   const now = new Date();
   try {
-    const data = await api(`/resumen/mensual?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&es_personal=0`);
+    const data = await api(`/resumen/mensual?anio=${now.getFullYear()}&mes=${now.getMonth()+1}`);
     document.getElementById('sum-ingresos').textContent = fmt(data.ingresos);
     document.getElementById('sum-gastos').textContent   = fmt(data.gastos);
     document.getElementById('sum-neto').textContent     = fmt(data.neto);
@@ -1030,7 +995,7 @@ async function cargarAreasResumen() {
   const now = new Date();
   const el = document.getElementById('areas-chart');
   try {
-    const data = await api(`/resumen/por-area?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&es_personal=0`);
+    const data = await api(`/resumen/por-area?anio=${now.getFullYear()}&mes=${now.getMonth()+1}`);
     if (!data.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin datos este mes</p>'; return; }
     const max = Math.max(...data.map(d => d.total));
     el.innerHTML = data.map(d => `
@@ -1049,7 +1014,7 @@ async function cargarAreasResumen() {
 async function cargarUltimos() {
   const el = document.getElementById('ultimos-movimientos');
   try {
-    const data = await api('/movimientos?limit=50&es_personal=0');
+    const data = await api('/movimientos?limit=50');
     // Guarda en cache para uso offline
     if (data.length) await guardarMovimientosCache(data);
     const ultimos = data.slice(0, 6);
@@ -1058,13 +1023,11 @@ async function cargarUltimos() {
     ultimos.forEach(m => el.appendChild(buildTxItem(m, 'server')));
   } catch(e) {
     // Offline: combina cache del servidor + pendientes locales
-    const [cachedAll, pendientesAll] = await Promise.all([
-      obtenerMovimientosCache({ limit: 50 }),
+    const [cached, pendientes] = await Promise.all([
+      obtenerMovimientosCache({ limit: 6 }),
       obtenerTodosDB('pendientes')
     ]);
-    // Solo casa (es_personal=0) en Inicio
-    const cached    = cachedAll.filter(m => !m.es_personal);
-    const pendientes = pendientesAll.filter(p => !p.es_personal);
+    // Mezcla pendientes (más recientes) con cache
     const pendientesConFlag = pendientes.map(p => ({ ...p, _offline: true }));
     const todos = [...pendientesConFlag, ...cached].slice(0, 6);
     if (!todos.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin datos guardados</p>'; return; }
@@ -1105,8 +1068,7 @@ async function guardarMovimiento() {
       categoria_id: parseInt(document.getElementById('f-categoria').value) || null,
       tipo:         tipoActual,
       descripcion:  document.getElementById('f-descripcion').value || null,
-      usuario_id:   esPersonal && usuarioActual ? usuarioActual.id : null,
-      es_personal:  esPersonal ? 1 : 0
+      usuario_id:   parseInt(document.getElementById('f-usuario').value) || null
     };
 
     // Verifica conectividad real (no solo navigator.onLine)
@@ -1133,11 +1095,10 @@ async function guardarMovimiento() {
       cargarUltimos();
     }
 
-    // Limpiar form y resetear ámbito a Casa (default)
+    // Limpiar form
     ['f-importe','f-concepto','f-descripcion'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('f-area').value = '';
     document.getElementById('f-categoria').innerHTML = '<option value="">— Selecciona área primero —</option>';
-    setAmbito('casa'); // vuelve a Casa por defecto
 
   } finally {
     // Siempre restaura el botón al terminar, sin importar si hubo error
@@ -1165,7 +1126,7 @@ function buildTxItem(m, context = 'server') {
     <div class="tx-item">
       <div class="tx-icon ${m.tipo.toLowerCase()}">${m.tipo === 'GASTO' ? '💸' : '💵'}</div>
       <div class="tx-info">
-        <div class="tx-concepto">${m.concepto || m.area || '—'} <span style="font-size:0.7rem;opacity:0.6">${m.es_personal ? '🐾' : '🏠'}</span></div>
+        <div class="tx-concepto">${m.concepto || m.area || '—'}</div>
         <div class="tx-meta">${m.fecha} · ${m.cuenta || 'pendiente'}${m.usuario ? ' · 👤 ' + m.usuario : ''}</div>
       </div>
       <div class="tx-amount ${m.tipo === 'GASTO' ? 'red' : 'green'}">${fmt(Math.abs(m.importe))}</div>
@@ -1236,7 +1197,6 @@ async function abrirModal(movId) {
   document.getElementById('m-concepto').value   = movActual.concepto || '';
   document.getElementById('m-descripcion').value = movActual.descripcion || '';
   setTipoModal(movActual.tipo);
-  setAmbitoModal(movActual.es_personal ? 'personal' : 'casa');
 
   // Carga selects desde cache
   const cuentas  = await obtenerCacheDB('cuentas')  || [];
@@ -1293,8 +1253,7 @@ async function guardarEdicion() {
     categoria_id: parseInt(document.getElementById('m-categoria').value) || null,
     tipo:         tipoModal,
     descripcion:  document.getElementById('m-descripcion').value || null,
-    usuario_id:   ambitoModal && usuarioActual ? usuarioActual.id : (parseInt(document.getElementById('m-usuario').value) || null),
-    es_personal:  ambitoModal ? 1 : 0
+    usuario_id:   parseInt(document.getElementById('m-usuario').value) || null
   };
 
   try {
@@ -1343,7 +1302,7 @@ async function cargarContadorDia() {
   const hoy = new Date().toISOString().split('T')[0];
   try {
     const now = new Date();
-    const data = await api(`/movimientos?mes=${now.getMonth()+1}&anio=${now.getFullYear()}&tipo=GASTO&es_personal=0&limit=200`);
+    const data = await api(`/movimientos?mes=${now.getMonth()+1}&anio=${now.getFullYear()}&tipo=GASTO&limit=200`);
     const hoyData = data.filter(m => m.fecha === hoy);
     const total = hoyData.reduce((s, m) => s + Math.abs(m.importe), 0);
     document.getElementById('day-total').textContent = fmt(total);
@@ -1565,7 +1524,7 @@ async function cargarVistaYo() {
 
 async function cargarResumenYo(now) {
   try {
-    const data = await api(`/resumen/mensual?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&usuario_id=${usuarioActual.id}&es_personal=1`);
+    const data = await api(`/resumen/mensual?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&usuario_id=${usuarioActual.id}`);
     document.getElementById('yo-ingresos').textContent = fmt(data.ingresos);
     document.getElementById('yo-gastos').textContent   = fmt(data.gastos);
     document.getElementById('yo-neto').textContent     = fmt(data.neto);
@@ -1574,7 +1533,7 @@ async function cargarResumenYo(now) {
     try {
       const cached = await obtenerMovimientosCache({ mes: now.getMonth()+1, anio: now.getFullYear(), limit: 500 });
       const pendientes = await obtenerTodosDB('pendientes');
-      const todos = [...cached, ...pendientes].filter(m => m.usuario_id === usuarioActual.id && m.es_personal == 1);
+      const todos = [...cached, ...pendientes].filter(m => m.usuario_id === usuarioActual.id);
       const ingresos = todos.filter(m => m.tipo==='INGRESO').reduce((s,m) => s+Math.abs(m.importe), 0);
       const gastos   = todos.filter(m => m.tipo==='GASTO').reduce((s,m) => s+Math.abs(m.importe), 0);
       document.getElementById('yo-ingresos').textContent = fmt(ingresos);
@@ -1589,7 +1548,7 @@ async function cargarResumenYo(now) {
 async function cargarAreasYo(now) {
   const el = document.getElementById('yo-areas-chart');
   try {
-    const data = await api(`/resumen/por-area?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&usuario_id=${usuarioActual.id}&es_personal=1`);
+    const data = await api(`/resumen/por-area?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&usuario_id=${usuarioActual.id}`);
     if (!data.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin gastos este mes</p>'; return; }
     const max = Math.max(...data.map(d => d.total));
     el.innerHTML = data.map(d => `
@@ -1606,7 +1565,7 @@ async function cargarAreasYo(now) {
     // Offline: calcula desde cache
     try {
       const cached = await obtenerMovimientosCache({ mes: now.getMonth()+1, anio: now.getFullYear(), tipo: 'GASTO', limit: 500 });
-      const mios = cached.filter(m => m.usuario_id === usuarioActual.id && m.es_personal == 1);
+      const mios = cached.filter(m => m.usuario_id === usuarioActual.id);
       if (!mios.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin datos en caché</p>'; return; }
       const porArea = {};
       mios.forEach(m => { if (m.area) porArea[m.area] = (porArea[m.area]||0) + Math.abs(m.importe); });
@@ -1628,15 +1587,15 @@ async function cargarAreasYo(now) {
 async function cargarUltimosYo(now) {
   const el = document.getElementById('yo-ultimos');
   try {
-    const data = await api(`/movimientos?limit=20&anio=${now.getFullYear()}&usuario_id=${usuarioActual.id}&es_personal=1`);
+    const data = await api(`/movimientos?limit=20&anio=${now.getFullYear()}&usuario_id=${usuarioActual.id}`);
     if (!data.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin movimientos</p>'; return; }
     if (data.length) await guardarMovimientosCache(data);
     el.innerHTML = '';
     data.forEach(m => el.appendChild(buildTxItem(m, 'server')));
   } catch(e) {
     const cached = await obtenerMovimientosCache({ anio: now.getFullYear(), limit: 20 });
-    const mios = cached.filter(m => m.usuario_id === usuarioActual.id && m.es_personal == 1);
-    const pendientes = (await obtenerTodosDB('pendientes')).filter(p => p.usuario_id === usuarioActual.id && p.es_personal == 1);
+    const mios = cached.filter(m => m.usuario_id === usuarioActual.id);
+    const pendientes = (await obtenerTodosDB('pendientes')).filter(p => p.usuario_id === usuarioActual.id);
     const todos = [...pendientes.map(p=>({...p,_offline:true})).reverse(), ...mios];
     if (!todos.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin datos en caché</p>'; return; }
     el.innerHTML = '';
