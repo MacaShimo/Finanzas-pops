@@ -3,64 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <meta name="theme-color" content="#1a1a2e">
+  <meta name="theme-color" content="#7c4dbd">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Finanzas Pops">
   <title>💰 Las Finanzas de las Pops</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg:        #faf7f2;
+      --bg2:       #f3ede3;
+      --surface:   #ffffff;
+      --surface2:  #f8f4ee;
+      --border:    #e8ddd0;
+      --text:      #3d2c1e;
+      --text2:     #8a7060;
+      --text3:     #baa898;
+      --purple:    #7c4dbd;
+      --purple-l:  #a97de0;
+      --purple-bg: #f0e8fa;
+      --mint:      #3db88a;
+      --mint-l:    #6dd4a8;
+      --mint-bg:   #e6f7f0;
+      --red:       #e05555;
+      --red-bg:    #fdeaea;
+      --amber:     #d97706;
+      --amber-bg:  #fef3c7;
+      --shadow:    0 2px 12px rgba(100,60,20,0.08);
+      --shadow-md: 0 4px 20px rgba(100,60,20,0.12);
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0f0f1a;
-      color: #e8e8f0;
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
     }
 
     /* ── Header ─────────────────────────────── */
     header {
-      background: linear-gradient(135deg, #1a1a3e, #2d2d6e);
+      background: linear-gradient(135deg, var(--purple), var(--purple-l));
       padding: 20px 16px 16px;
       text-align: center;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+      box-shadow: var(--shadow-md);
     }
-    header h1 { font-size: 1.4rem; font-weight: 700; color: #a78bfa; }
-    header p  { font-size: 0.8rem; color: #888; margin-top: 2px; }
+    header h1 { font-size: 1.4rem; font-weight: 800; color: white; }
+    header p  { font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 2px; }
 
     /* ── Tabs ───────────────────────────────── */
     .tabs {
       display: flex;
-      background: #12122a;
-      border-bottom: 1px solid #2a2a4a;
+      background: var(--surface);
+      border-bottom: 2px solid var(--border);
+      box-shadow: var(--shadow);
     }
     .tab {
       flex: 1; padding: 12px 0;
-      text-align: center; font-size: 0.85rem;
-      color: #666; cursor: pointer;
+      text-align: center; font-size: 0.82rem; font-weight: 600;
+      color: var(--text3); cursor: pointer;
       border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
       transition: all 0.2s;
     }
-    .tab.active { color: #a78bfa; border-bottom-color: #a78bfa; }
+    .tab.active { color: var(--purple); border-bottom-color: var(--purple); }
 
     /* ── Sections ───────────────────────────── */
-    .section { display: none; padding: 16px; }
+    .section { display: none; padding: 16px; background: var(--bg); }
     .section.active { display: block; }
 
     /* ── Cards ──────────────────────────────── */
     .card {
-      background: #1a1a3e;
-      border-radius: 14px;
+      background: var(--surface);
+      border-radius: 16px;
       padding: 16px;
       margin-bottom: 14px;
-      border: 1px solid #2a2a5a;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
     }
     .card-title {
-      font-size: 0.75rem;
-      color: #888;
+      font-size: 0.72rem;
+      color: var(--text2);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.07em;
+      font-weight: 700;
       margin-bottom: 12px;
     }
 
@@ -69,65 +98,87 @@
       display: flex; gap: 10px; margin-bottom: 14px;
     }
     .summary-box {
-      flex: 1; background: #12122a;
-      border-radius: 10px; padding: 12px 10px;
-      text-align: center;
+      flex: 1; background: var(--surface2);
+      border-radius: 14px; padding: 12px 10px;
+      text-align: center; border: 1px solid var(--border);
     }
-    .summary-box .label { font-size: 0.7rem; color: #888; margin-bottom: 4px; }
-    .summary-box .amount { font-size: 1.1rem; font-weight: 700; }
-    .amount.green  { color: #34d399; }
-    .amount.red    { color: #f87171; }
-    .amount.purple { color: #a78bfa; }
+    .summary-box .label { font-size: 0.68rem; color: var(--text2); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .summary-box .amount { font-size: 1.05rem; font-weight: 800; }
+    .amount.green  { color: var(--mint); }
+    .amount.red    { color: var(--red); }
+    .amount.purple { color: var(--purple); }
 
     /* ── Form ───────────────────────────────── */
     .form-group { margin-bottom: 14px; }
-    label { display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px; }
+    label { display: block; font-size: 0.75rem; color: var(--text2); margin-bottom: 5px; font-weight: 700; }
 
     input, select, textarea {
       width: 100%;
-      background: #12122a;
-      border: 1px solid #2a2a5a;
-      border-radius: 8px;
-      color: #e8e8f0;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
       padding: 11px 12px;
       font-size: 0.95rem;
+      font-family: 'Nunito', sans-serif;
     }
     input:focus, select:focus, textarea:focus {
-      outline: none; border-color: #a78bfa;
+      outline: none; border-color: var(--purple); background: white;
+      box-shadow: 0 0 0 3px var(--purple-bg);
     }
     textarea { resize: none; height: 70px; }
 
     /* Tipo toggle */
     .type-toggle { display: flex; gap: 8px; margin-bottom: 14px; }
+
+    /* Ámbito toggle (Casa / Personal) */
+    .ambito-toggle {
+      display: flex; gap: 0; margin-bottom: 14px;
+      border-radius: 12px; overflow: hidden;
+      border: 1.5px solid var(--border);
+      background: var(--surface2);
+    }
+    .ambito-btn {
+      flex: 1; padding: 10px 8px;
+      background: transparent; color: var(--text3);
+      border: none; font-size: 0.85rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+      font-family: 'Nunito', sans-serif;
+    }
+    .ambito-btn.active.casa     { background: var(--mint-bg); color: var(--mint); }
+    .ambito-btn.active.personal { background: var(--purple-bg); color: var(--purple); }
     .type-btn {
       flex: 1; padding: 10px;
-      border-radius: 8px; border: 1px solid #2a2a5a;
-      background: #12122a; color: #888;
-      font-size: 0.9rem; cursor: pointer;
-      transition: all 0.2s;
+      border-radius: 10px; border: 1.5px solid var(--border);
+      background: var(--surface2); color: var(--text2);
+      font-size: 0.9rem; cursor: pointer; font-weight: 700;
+      transition: all 0.2s; font-family: 'Nunito', sans-serif;
     }
-    .type-btn.active.gasto   { background: #3f1212; border-color: #f87171; color: #f87171; }
-    .type-btn.active.ingreso { background: #0f3325; border-color: #34d399; color: #34d399; }
+    .type-btn.active.gasto   { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+    .type-btn.active.ingreso { background: var(--mint-bg); border-color: var(--mint); color: var(--mint); }
 
     /* ── Buttons ────────────────────────────── */
     .btn {
       width: 100%; padding: 14px;
-      border: none; border-radius: 10px;
-      font-size: 1rem; font-weight: 600;
-      cursor: pointer; transition: opacity 0.2s;
+      border: none; border-radius: 12px;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+      font-family: 'Nunito', sans-serif;
+      letter-spacing: 0.02em;
     }
-    .btn:active { opacity: 0.8; }
-    .btn-primary { background: linear-gradient(135deg, #7c3aed, #a78bfa); color: white; }
+    .btn:active { opacity: 0.85; transform: scale(0.99); }
+    .btn-primary { background: linear-gradient(135deg, var(--purple), var(--purple-l)); color: white; box-shadow: 0 4px 14px rgba(124,77,189,0.35); }
     .btn-sm {
       padding: 6px 12px; font-size: 0.8rem;
-      border-radius: 6px; border: none; cursor: pointer;
+      border-radius: 8px; border: none; cursor: pointer;
+      font-family: 'Nunito', sans-serif; font-weight: 700;
     }
-    .btn-danger { background: #3f1212; color: #f87171; }
+    .btn-danger { background: var(--red-bg); color: var(--red); border: 1px solid var(--red); }
 
     /* ── Transaction list ───────────────────── */
     .tx-wrapper {
       position: relative; overflow: hidden;
-      border-bottom: 1px solid #1f1f3a;
+      border-bottom: 1px solid var(--border);
     }
     .tx-wrapper:last-child { border-bottom: none; }
 
@@ -136,7 +187,7 @@
       padding: 12px 0;
       gap: 10px;
       transition: transform 0.25s ease;
-      background: #1a1a3e;
+      background: var(--surface);
       position: relative; z-index: 1;
       cursor: pointer;
       user-select: none;
@@ -153,53 +204,55 @@
       display: flex; align-items: center; justify-content: center;
       flex-direction: column; gap: 2px;
     }
-    .tx-action-btn span { font-size: 0.6rem; font-weight: 600; }
-    .tx-btn-edit   { background: #2d2d6e; color: #a78bfa; }
-    .tx-btn-delete { background: #3f1212; color: #f87171; }
+    .tx-action-btn span { font-size: 0.6rem; font-weight: 700; }
+    .tx-btn-edit   { background: var(--purple-bg); color: var(--purple); }
+    .tx-btn-delete { background: var(--red-bg); color: var(--red); }
     .tx-icon {
-      width: 38px; height: 38px;
-      border-radius: 10px;
+      width: 40px; height: 40px;
+      border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
       font-size: 1.1rem; flex-shrink: 0;
     }
-    .tx-icon.gasto   { background: #3f1212; }
-    .tx-icon.ingreso { background: #0f3325; }
+    .tx-icon.gasto   { background: var(--red-bg); }
+    .tx-icon.ingreso { background: var(--mint-bg); }
     .tx-info { flex: 1; min-width: 0; }
-    .tx-concepto { font-size: 0.9rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .tx-meta { font-size: 0.72rem; color: #666; margin-top: 2px; }
-    .tx-amount { font-size: 0.95rem; font-weight: 700; flex-shrink: 0; }
+    .tx-concepto { font-size: 0.88rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+    .tx-meta { font-size: 0.7rem; color: var(--text2); margin-top: 2px; font-weight: 500; }
+    .tx-amount { font-size: 0.95rem; font-weight: 800; flex-shrink: 0; }
 
     /* ── Toast ──────────────────────────────── */
     .toast {
       position: fixed; bottom: 24px; left: 50%;
       transform: translateX(-50%) translateY(80px);
-      background: #34d399; color: #0a2a1a;
+      background: var(--mint); color: white;
       padding: 10px 20px; border-radius: 20px;
-      font-size: 0.9rem; font-weight: 600;
+      font-size: 0.88rem; font-weight: 700;
       transition: transform 0.3s; z-index: 100;
+      box-shadow: var(--shadow-md);
     }
     .toast.show { transform: translateX(-50%) translateY(0); }
-    .toast.error { background: #f87171; color: #3f0000; }
+    .toast.error { background: var(--red); color: white; }
 
     /* ── Config banner ──────────────────────── */
     .config-banner {
-      background: #2a1a00; border: 1px solid #f59e0b;
-      border-radius: 10px; padding: 12px 14px;
-      margin-bottom: 14px; font-size: 0.82rem; color: #fcd34d;
+      background: var(--amber-bg); border: 1.5px solid var(--amber);
+      border-radius: 12px; padding: 12px 14px;
+      margin-bottom: 14px; font-size: 0.82rem; color: var(--amber); font-weight: 600;
     }
     .config-input-row { display: flex; gap: 8px; align-items: flex-end; }
     .config-input-row input { flex: 1; }
     .config-input-row button {
-      padding: 11px 14px; background: #f59e0b; color: #1a0f00;
-      border: none; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap;
+      padding: 11px 14px; background: var(--amber); color: white;
+      border: none; border-radius: 10px; font-weight: 700; cursor: pointer; white-space: nowrap;
+      font-family: 'Nunito', sans-serif;
     }
 
-    select option { background: #1a1a3e; }
+    select option { background: white; color: var(--text); }
 
     /* ── Pantalla bienvenida ────────────────── */
     .welcome-overlay {
       position: fixed; inset: 0;
-      background: #0f0f1a;
+      background: var(--bg);
       z-index: 300;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
@@ -211,74 +264,78 @@
     }
     .welcome-paw { font-size: 3rem; margin-bottom: 12px; }
     .welcome-title {
-      font-size: 1.4rem; font-weight: 700;
-      color: #a78bfa; margin-bottom: 6px; text-align: center;
+      font-size: 1.5rem; font-weight: 800;
+      color: var(--purple); margin-bottom: 6px; text-align: center;
     }
     .welcome-sub {
-      font-size: 0.85rem; color: #666;
+      font-size: 0.85rem; color: var(--text2); font-weight: 600;
       margin-bottom: 32px; text-align: center;
     }
     .welcome-btns { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 280px; }
     .welcome-btn {
-      padding: 16px; border-radius: 14px;
-      border: 2px solid #2a2a5a;
-      background: #1a1a3e; color: #e8e8f0;
-      font-size: 1.1rem; font-weight: 600;
+      padding: 16px; border-radius: 16px;
+      border: 2px solid var(--border);
+      background: var(--surface); color: var(--text);
+      font-size: 1.1rem; font-weight: 700;
       cursor: pointer; text-align: center;
-      transition: all 0.2s;
+      transition: all 0.2s; box-shadow: var(--shadow);
+      font-family: 'Nunito', sans-serif;
     }
     .welcome-btn:active { transform: scale(0.97); }
     .welcome-btn.selected {
-      border-color: #a78bfa;
-      background: #2d2060; color: #a78bfa;
+      border-color: var(--purple);
+      background: var(--purple-bg); color: var(--purple);
     }
 
     /* ── Chip de usuario activo ─────────────── */
     .user-chip {
       display: inline-flex; align-items: center; gap: 5px;
-      background: #2d2060; border: 1px solid #a78bfa;
+      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
       border-radius: 20px; padding: 3px 10px 3px 8px;
-      font-size: 0.72rem; color: #a78bfa; cursor: pointer;
-      margin-left: 8px; vertical-align: middle;
+      font-size: 0.72rem; color: white; cursor: pointer;
+      margin-left: 8px; vertical-align: middle; font-weight: 600;
     }
 
     /* ── Offline indicator ──────────────────── */
     .status-bar {
       display: flex; align-items: center; justify-content: center;
-      gap: 6px; padding: 6px 12px;
-      font-size: 0.75rem; font-weight: 600;
+      gap: 6px; padding: 5px 12px;
+      font-size: 0.73rem; font-weight: 600;
       transition: all 0.3s;
     }
-    .status-bar.online  { background: #0f3325; color: #34d399; }
-    .status-bar.offline { background: #3f1212; color: #f87171; }
+    .status-bar.online  { background: var(--mint-bg); color: var(--mint); }
+    .status-bar.offline { background: var(--red-bg); color: var(--red); }
     .status-dot {
       width: 7px; height: 7px; border-radius: 50%;
     }
-    .online  .status-dot { background: #34d399; }
-    .offline .status-dot { background: #f87171; animation: pulse 1s infinite; }
+    .online  .status-dot { background: var(--mint); }
+    .offline .status-dot { background: var(--red); animation: pulse 1s infinite; }
     @keyframes pulse {
       0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
     }
     .sync-btn {
       margin-left: 8px; padding: 2px 8px;
-      background: #a78bfa; color: white;
+      background: var(--purple); color: white;
       border: none; border-radius: 10px;
-      font-size: 0.7rem; font-weight: 600; cursor: pointer;
+      font-size: 0.7rem; font-weight: 700; cursor: pointer;
+      font-family: 'Nunito', sans-serif;
     }
     /* ── Modal edición ──────────────────────── */
     .modal-overlay {
       position: fixed; inset: 0;
-      background: rgba(0,0,0,0.7);
+      background: rgba(60,30,10,0.45);
+      backdrop-filter: blur(4px);
       z-index: 200; display: none;
       align-items: flex-end; justify-content: center;
     }
     .modal-overlay.show { display: flex; }
     .modal {
-      background: #1a1a3e; border-radius: 20px 20px 0 0;
+      background: var(--surface); border-radius: 24px 24px 0 0;
       padding: 20px 16px 32px; width: 100%; max-width: 480px;
-      border: 1px solid #2a2a5a; border-bottom: none;
+      border: 1px solid var(--border); border-bottom: none;
       max-height: 90vh; overflow-y: auto;
       animation: slideUp 0.25s ease;
+      box-shadow: 0 -8px 30px rgba(100,60,20,0.15);
     }
     @keyframes slideUp {
       from { transform: translateY(100%); }
@@ -288,25 +345,25 @@
       display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 16px;
     }
-    .modal-title { font-size: 1rem; font-weight: 700; color: #a78bfa; }
+    .modal-title { font-size: 1rem; font-weight: 800; color: var(--purple); }
     .modal-close {
-      background: #12122a; border: none; color: #888;
+      background: var(--surface2); border: 1px solid var(--border); color: var(--text2);
       width: 30px; height: 30px; border-radius: 50%;
       font-size: 1rem; cursor: pointer;
     }
     .btn-row { display: flex; gap: 8px; margin-top: 12px; }
     .btn-row .btn { flex: 1; padding: 12px; }
-    .btn-secondary { background: #2a2a5a; color: #a78bfa; }
-    .btn-delete-confirm { background: #3f1212; color: #f87171; }
+    .btn-secondary { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple); }
+    .btn-delete-confirm { background: var(--red-bg); color: var(--red); border: 1px solid var(--red); }
 
     /* ── Botón flotante gasto rápido ────────── */
     .fab {
       position: fixed; bottom: 24px; right: 20px;
       width: 58px; height: 58px; border-radius: 50%;
-      background: linear-gradient(135deg, #7c3aed, #a78bfa);
+      background: linear-gradient(135deg, var(--purple), var(--purple-l));
       border: none; cursor: pointer;
       font-size: 1.6rem;
-      box-shadow: 0 4px 20px rgba(124,58,237,0.5);
+      box-shadow: 0 4px 20px rgba(124,77,189,0.45);
       z-index: 150;
       display: flex; align-items: center; justify-content: center;
       transition: transform 0.2s;
@@ -316,41 +373,92 @@
     /* ── Modal gasto rápido ─────────────────── */
     .quick-modal {
       position: fixed; bottom: 0; left: 0; right: 0;
-      background: #1a1a3e; border-radius: 20px 20px 0 0;
+      background: var(--surface); border-radius: 24px 24px 0 0;
       padding: 20px 16px 36px;
-      border: 1px solid #2a2a5a; border-bottom: none;
+      border: 1px solid var(--border); border-bottom: none;
       z-index: 160;
       transform: translateY(100%);
       transition: transform 0.3s ease;
+      box-shadow: 0 -8px 30px rgba(100,60,20,0.15);
     }
     .quick-modal.show { transform: translateY(0); }
     .quick-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+      position: fixed; inset: 0; background: rgba(60,30,10,0.4);
+      backdrop-filter: blur(3px);
       z-index: 155; display: none;
     }
     .quick-overlay.show { display: block; }
     .quick-title {
-      font-size: 1rem; font-weight: 700; color: #a78bfa;
+      font-size: 1rem; font-weight: 800; color: var(--purple);
       margin-bottom: 14px; text-align: center;
     }
     .quick-amount-row {
       display: flex; gap: 8px; margin-bottom: 12px; align-items: flex-end;
     }
     .quick-amount-row input {
-      flex: 1; font-size: 1.4rem; font-weight: 700;
+      flex: 1; font-size: 1.4rem; font-weight: 800;
       text-align: center; padding: 14px;
     }
 
     /* ── Contador gastos del día ─────────────── */
     .day-counter {
-      background: #12122a; border: 1px solid #2a2a5a;
-      border-radius: 12px; padding: 10px 14px;
+      background: var(--red-bg); border: 1.5px solid #f5c0c0;
+      border-radius: 14px; padding: 10px 14px;
       margin-bottom: 14px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .day-counter .label { font-size: 0.75rem; color: #888; }
-    .day-counter .value { font-size: 1.1rem; font-weight: 700; color: #f87171; }
-    .day-counter .count { font-size: 0.75rem; color: #666; }
+    .day-counter .label { font-size: 0.72rem; color: var(--red); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .day-counter .value { font-size: 1.1rem; font-weight: 800; color: var(--red); }
+    .day-counter .count { font-size: 0.72rem; color: var(--red); opacity: 0.7; font-weight: 600; }
+
+    /* ── CSV Import section ─────────────────── */
+    .csv-drop-zone {
+      border: 2px dashed var(--purple-l);
+      border-radius: 16px; padding: 28px 20px;
+      text-align: center; cursor: pointer;
+      background: var(--purple-bg);
+      transition: all 0.2s; margin-bottom: 14px;
+    }
+    .csv-drop-zone:hover, .csv-drop-zone.drag-over {
+      background: #e8d8f8; border-color: var(--purple);
+    }
+    .csv-drop-icon { font-size: 2.2rem; margin-bottom: 8px; }
+    .csv-drop-text { font-size: 0.9rem; color: var(--purple); font-weight: 700; margin-bottom: 4px; }
+    .csv-drop-sub  { font-size: 0.75rem; color: var(--text2); }
+    .csv-preview-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.75rem; margin-bottom: 12px;
+    }
+    .csv-preview-table th {
+      background: var(--purple-bg); color: var(--purple);
+      padding: 7px 8px; text-align: left; font-weight: 700;
+      border-bottom: 2px solid var(--purple-l);
+    }
+    .csv-preview-table td {
+      padding: 6px 8px; border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .csv-preview-table tr:hover td { background: var(--surface2); }
+    .csv-row-ok   { border-left: 3px solid var(--mint); }
+    .csv-row-warn { border-left: 3px solid var(--amber); }
+    .csv-row-err  { border-left: 3px solid var(--red); opacity: 0.6; }
+    .csv-badge {
+      display: inline-block; padding: 2px 7px;
+      border-radius: 20px; font-size: 0.68rem; font-weight: 700;
+    }
+    .csv-badge-ok   { background: var(--mint-bg); color: var(--mint); }
+    .csv-badge-warn { background: var(--amber-bg); color: var(--amber); }
+    .csv-badge-err  { background: var(--red-bg); color: var(--red); }
+    .csv-stats {
+      display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;
+    }
+    .csv-stat {
+      flex: 1; min-width: 80px; background: var(--surface2);
+      border-radius: 10px; padding: 8px 10px; text-align: center;
+      border: 1px solid var(--border);
+    }
+    .csv-stat .n { font-size: 1.2rem; font-weight: 800; }
+    .csv-stat .l { font-size: 0.68rem; color: var(--text2); font-weight: 600; text-transform: uppercase; }
   </style>
 </head>
 <body>
@@ -435,6 +543,28 @@
     <div class="card-title">Últimos movimientos</div>
     <div id="ultimos-movimientos">Cargando...</div>
   </div>
+
+  <!-- CSV Import casa -->
+  <div class="card">
+    <div class="card-title">📥 Importar desde CSV (gastos de casa)</div>
+    <div class="csv-drop-zone" id="csv-drop-casa" onclick="document.getElementById('csv-file-casa').click()"
+         ondragover="csvDragOver(event,'casa')" ondragleave="csvDragLeave('casa')" ondrop="csvDrop(event,'casa')">
+      <div class="csv-drop-icon">📂</div>
+      <div class="csv-drop-text">Arrastra tu CSV o toca para seleccionar</div>
+      <div class="csv-drop-sub">Formato: Fecha · Descripción · Canal o Sucursal · Cargos (CLP)</div>
+    </div>
+    <input type="file" id="csv-file-casa" accept=".csv,.txt" style="display:none" onchange="csvFileSelected(event,'casa')">
+    <div id="csv-preview-casa" style="display:none">
+      <div class="csv-stats" id="csv-stats-casa"></div>
+      <div style="overflow-x:auto; border-radius:10px; border:1px solid var(--border)">
+        <table class="csv-preview-table" id="csv-table-casa"></table>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn btn-danger btn-sm" style="flex:1;padding:10px" onclick="csvCancelar('casa')">✕ Cancelar</button>
+        <button class="btn btn-primary" style="flex:2;padding:10px" onclick="csvImportar('casa')">📥 Importar válidos</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ══════════ NUEVO MOVIMIENTO ══════════ -->
@@ -447,9 +577,9 @@
       <button class="type-btn ingreso"      id="btn-ingreso" onclick="setTipo('INGRESO')">💵 Ingreso</button>
     </div>
 
-    <div class="form-group">
-      <label>👤 ¿Quién registra?</label>
-      <select id="f-usuario"><option value="">Cargando...</option></select>
+    <div class="ambito-toggle">
+      <button class="ambito-btn casa active" id="btn-casa"     onclick="setAmbito('casa')">🏠 Casa</button>
+      <button class="ambito-btn personal"    id="btn-personal" onclick="setAmbito('personal')">🐾 Personal</button>
     </div>
 
     <div class="form-group">
@@ -562,6 +692,28 @@
     <div id="yo-ultimos">Cargando...</div>
   </div>
 
+  <!-- CSV Import personal -->
+  <div class="card">
+    <div class="card-title">📥 Importar desde CSV (gastos personales)</div>
+    <div class="csv-drop-zone" id="csv-drop-yo" onclick="document.getElementById('csv-file-yo').click()"
+         ondragover="csvDragOver(event,'yo')" ondragleave="csvDragLeave('yo')" ondrop="csvDrop(event,'yo')">
+      <div class="csv-drop-icon">📂</div>
+      <div class="csv-drop-text">Arrastra tu CSV o toca para seleccionar</div>
+      <div class="csv-drop-sub">Formato: Fecha · Descripción · Canal o Sucursal · Cargos (CLP)</div>
+    </div>
+    <input type="file" id="csv-file-yo" accept=".csv,.txt" style="display:none" onchange="csvFileSelected(event,'yo')">
+    <div id="csv-preview-yo" style="display:none">
+      <div class="csv-stats" id="csv-stats-yo"></div>
+      <div style="overflow-x:auto; border-radius:10px; border:1px solid var(--border)">
+        <table class="csv-preview-table" id="csv-table-yo"></table>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn btn-danger btn-sm" style="flex:1;padding:10px" onclick="csvCancelar('yo')">✕ Cancelar</button>
+        <button class="btn btn-primary" style="flex:2;padding:10px" onclick="csvImportar('yo')">📥 Importar válidos</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- Botón flotante gasto rápido -->
@@ -606,6 +758,11 @@
       <button class="type-btn ingreso" id="m-btn-ingreso" onclick="setTipoModal('INGRESO')">💵 Ingreso</button>
     </div>
 
+    <div class="ambito-toggle">
+      <button class="ambito-btn casa active" id="m-btn-casa"     onclick="setAmbitoModal('casa')">🏠 Casa</button>
+      <button class="ambito-btn personal"    id="m-btn-personal" onclick="setAmbitoModal('personal')">🐾 Personal</button>
+    </div>
+
     <div class="form-group">
       <label>👤 Usuario</label>
       <select id="m-usuario"><option value="">— Selecciona —</option></select>
@@ -647,11 +804,13 @@
 </div>
 
 <script>
-let API_URL = localStorage.getItem('api_url') || 'https://web-production-7d6530.up.railway.app';
-let tipoActual = 'GASTO';
+let API_URL = localStorage.getItem('api_url') || 'http://192.168.0.105:8000';
+let tipoActual  = 'GASTO';
+let esPersonal  = false;       // false=casa/compartido, true=personal
+let ambitoModal = false;       // ámbito del modal de edición
 let usuarioActual = JSON.parse(localStorage.getItem('usuario_activo') || 'null');
 // usuarioActual = { id, nombre } o null
-let estaOnline = false;        // empieza en false hasta que se confirme
+let estaOnline  = false;       // empieza en false hasta que se confirme
 let guardandoMovimiento = false; // flag anti-duplicado
 
 // ── Verificar conectividad real con la API ───────────────────
@@ -915,6 +1074,19 @@ function setTipo(tipo) {
   document.getElementById('btn-ingreso').className = 'type-btn ingreso' + (tipo === 'INGRESO' ? ' active' : '');
 }
 
+// ── Ámbito toggle (Casa / Personal) ──────────────────────────
+function setAmbito(ambito) {
+  esPersonal = (ambito === 'personal');
+  document.getElementById('btn-casa').className     = 'ambito-btn casa'     + (!esPersonal ? ' active' : '');
+  document.getElementById('btn-personal').className = 'ambito-btn personal' + ( esPersonal ? ' active' : '');
+}
+
+function setAmbitoModal(ambito) {
+  ambitoModal = (ambito === 'personal');
+  document.getElementById('m-btn-casa').className     = 'ambito-btn casa'     + (!ambitoModal ? ' active' : '');
+  document.getElementById('m-btn-personal').className = 'ambito-btn personal' + ( ambitoModal ? ' active' : '');
+}
+
 // ── Cargar catálogos ─────────────────────────────────────────
 async function cargarCuentas() {
   const sel = document.getElementById('f-cuenta');
@@ -982,7 +1154,7 @@ async function cargarCategorias() {
 async function cargarResumen() {
   const now = new Date();
   try {
-    const data = await api(`/resumen/mensual?anio=${now.getFullYear()}&mes=${now.getMonth()+1}`);
+    const data = await api(`/resumen/mensual?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&es_personal=0`);
     document.getElementById('sum-ingresos').textContent = fmt(data.ingresos);
     document.getElementById('sum-gastos').textContent   = fmt(data.gastos);
     document.getElementById('sum-neto').textContent     = fmt(data.neto);
@@ -995,7 +1167,7 @@ async function cargarAreasResumen() {
   const now = new Date();
   const el = document.getElementById('areas-chart');
   try {
-    const data = await api(`/resumen/por-area?anio=${now.getFullYear()}&mes=${now.getMonth()+1}`);
+    const data = await api(`/resumen/por-area?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&es_personal=0`);
     if (!data.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin datos este mes</p>'; return; }
     const max = Math.max(...data.map(d => d.total));
     el.innerHTML = data.map(d => `
@@ -1014,7 +1186,7 @@ async function cargarAreasResumen() {
 async function cargarUltimos() {
   const el = document.getElementById('ultimos-movimientos');
   try {
-    const data = await api('/movimientos?limit=50');
+    const data = await api('/movimientos?limit=50&es_personal=0');
     // Guarda en cache para uso offline
     if (data.length) await guardarMovimientosCache(data);
     const ultimos = data.slice(0, 6);
@@ -1023,11 +1195,13 @@ async function cargarUltimos() {
     ultimos.forEach(m => el.appendChild(buildTxItem(m, 'server')));
   } catch(e) {
     // Offline: combina cache del servidor + pendientes locales
-    const [cached, pendientes] = await Promise.all([
-      obtenerMovimientosCache({ limit: 6 }),
+    const [cachedAll, pendientesAll] = await Promise.all([
+      obtenerMovimientosCache({ limit: 50 }),
       obtenerTodosDB('pendientes')
     ]);
-    // Mezcla pendientes (más recientes) con cache
+    // Solo casa (es_personal=0) en Inicio
+    const cached    = cachedAll.filter(m => !m.es_personal);
+    const pendientes = pendientesAll.filter(p => !p.es_personal);
     const pendientesConFlag = pendientes.map(p => ({ ...p, _offline: true }));
     const todos = [...pendientesConFlag, ...cached].slice(0, 6);
     if (!todos.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin datos guardados</p>'; return; }
@@ -1068,7 +1242,8 @@ async function guardarMovimiento() {
       categoria_id: parseInt(document.getElementById('f-categoria').value) || null,
       tipo:         tipoActual,
       descripcion:  document.getElementById('f-descripcion').value || null,
-      usuario_id:   parseInt(document.getElementById('f-usuario').value) || null
+      usuario_id:   esPersonal && usuarioActual ? usuarioActual.id : null,
+      es_personal:  esPersonal ? 1 : 0
     };
 
     // Verifica conectividad real (no solo navigator.onLine)
@@ -1095,10 +1270,11 @@ async function guardarMovimiento() {
       cargarUltimos();
     }
 
-    // Limpiar form
+    // Limpiar form y resetear ámbito a Casa (default)
     ['f-importe','f-concepto','f-descripcion'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('f-area').value = '';
     document.getElementById('f-categoria').innerHTML = '<option value="">— Selecciona área primero —</option>';
+    setAmbito('casa'); // vuelve a Casa por defecto
 
   } finally {
     // Siempre restaura el botón al terminar, sin importar si hubo error
@@ -1126,7 +1302,7 @@ function buildTxItem(m, context = 'server') {
     <div class="tx-item">
       <div class="tx-icon ${m.tipo.toLowerCase()}">${m.tipo === 'GASTO' ? '💸' : '💵'}</div>
       <div class="tx-info">
-        <div class="tx-concepto">${m.concepto || m.area || '—'}</div>
+        <div class="tx-concepto">${m.concepto || m.area || '—'} <span style="font-size:0.7rem;opacity:0.6">${m.es_personal ? '🐾' : '🏠'}</span></div>
         <div class="tx-meta">${m.fecha} · ${m.cuenta || 'pendiente'}${m.usuario ? ' · 👤 ' + m.usuario : ''}</div>
       </div>
       <div class="tx-amount ${m.tipo === 'GASTO' ? 'red' : 'green'}">${fmt(Math.abs(m.importe))}</div>
@@ -1197,6 +1373,7 @@ async function abrirModal(movId) {
   document.getElementById('m-concepto').value   = movActual.concepto || '';
   document.getElementById('m-descripcion').value = movActual.descripcion || '';
   setTipoModal(movActual.tipo);
+  setAmbitoModal(movActual.es_personal ? 'personal' : 'casa');
 
   // Carga selects desde cache
   const cuentas  = await obtenerCacheDB('cuentas')  || [];
@@ -1253,7 +1430,8 @@ async function guardarEdicion() {
     categoria_id: parseInt(document.getElementById('m-categoria').value) || null,
     tipo:         tipoModal,
     descripcion:  document.getElementById('m-descripcion').value || null,
-    usuario_id:   parseInt(document.getElementById('m-usuario').value) || null
+    usuario_id:   ambitoModal && usuarioActual ? usuarioActual.id : (parseInt(document.getElementById('m-usuario').value) || null),
+    es_personal:  ambitoModal ? 1 : 0
   };
 
   try {
@@ -1302,7 +1480,7 @@ async function cargarContadorDia() {
   const hoy = new Date().toISOString().split('T')[0];
   try {
     const now = new Date();
-    const data = await api(`/movimientos?mes=${now.getMonth()+1}&anio=${now.getFullYear()}&tipo=GASTO&limit=200`);
+    const data = await api(`/movimientos?mes=${now.getMonth()+1}&anio=${now.getFullYear()}&tipo=GASTO&es_personal=0&limit=200`);
     const hoyData = data.filter(m => m.fecha === hoy);
     const total = hoyData.reduce((s, m) => s + Math.abs(m.importe), 0);
     document.getElementById('day-total').textContent = fmt(total);
@@ -1445,6 +1623,207 @@ async function cargarHistorial() {
   }
 }
 
+// ══════════════════════════════════════════════════════════
+// CSV IMPORT
+// Formato esperado del banco: Fecha | Descripción | Canal o Sucursal | Cargos (CLP)
+// ══════════════════════════════════════════════════════════
+
+let csvDataStore = { casa: [], yo: [] };
+
+function csvDragOver(e, scope) {
+  e.preventDefault();
+  document.getElementById('csv-drop-' + scope).classList.add('drag-over');
+}
+function csvDragLeave(scope) {
+  document.getElementById('csv-drop-' + scope).classList.remove('drag-over');
+}
+function csvDrop(e, scope) {
+  e.preventDefault();
+  csvDragLeave(scope);
+  const file = e.dataTransfer.files[0];
+  if (file) csvParsear(file, scope);
+}
+function csvFileSelected(e, scope) {
+  const file = e.target.files[0];
+  if (file) csvParsear(file, scope);
+  e.target.value = '';
+}
+
+function csvParsear(file, scope) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result;
+    const rows = csvParseRows(text);
+    if (!rows.length) { showToast('CSV vacío o sin datos válidos ❌', true); return; }
+    csvDataStore[scope] = rows;
+    csvMostrarPreview(rows, scope);
+  };
+  // Try UTF-8 first, then latin-1 for Chilean bank exports
+  reader.readAsText(file, 'UTF-8');
+}
+
+function csvParseRows(text) {
+  // Normalize line endings
+  const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+  const rows = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+
+    // Parse CSV (handles quoted fields with commas inside)
+    const cols = csvSplitLine(line);
+    if (cols.length < 2) continue;
+
+    // Try to find date column (dd/mm/yyyy or yyyy-mm-dd)
+    const fecha = csvParseDate(cols[0]);
+    if (!fecha) continue; // skip header/non-data rows
+
+    const descripcion = (cols[1] || '').trim().replace(/^"|"$/g, '');
+    // cols[2] = canal/sucursal (ignored), cols[3] = cargo
+    const importeRaw = (cols[3] || cols[2] || '').trim().replace(/^"|"$/g, '');
+    const importe = csvParseImporte(importeRaw);
+
+    rows.push({
+      fecha,
+      descripcion,
+      importe,
+      importeRaw,
+      ok: fecha && descripcion && importe > 0
+    });
+  }
+  return rows;
+}
+
+function csvSplitLine(line) {
+  // Split by semicolon or comma, respecting quotes
+  const sep = line.includes(';') ? ';' : ',';
+  const result = [];
+  let cur = '', inQ = false;
+  for (let c of line) {
+    if (c === '"') { inQ = !inQ; }
+    else if (c === sep && !inQ) { result.push(cur); cur = ''; }
+    else cur += c;
+  }
+  result.push(cur);
+  return result;
+}
+
+function csvParseDate(raw) {
+  if (!raw) return null;
+  raw = raw.trim().replace(/^"|"$/g, '');
+  // dd/mm/yyyy or dd-mm-yyyy
+  let m = raw.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (m) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+  // yyyy-mm-dd
+  m = raw.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+  if (m) return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;
+  return null;
+}
+
+function csvParseImporte(raw) {
+  if (!raw) return 0;
+  // Remove currency symbols, spaces, dots as thousands separator, replace comma with dot
+  let clean = raw.replace(/[$\s]/g, '')
+                 .replace(/\./g, '')   // Chilean: 9.980,00
+                 .replace(',', '.');
+  const n = parseFloat(clean);
+  return isNaN(n) ? 0 : Math.abs(n);
+}
+
+function csvMostrarPreview(rows, scope) {
+  const ok   = rows.filter(r => r.ok).length;
+  const warn = rows.filter(r => !r.ok).length;
+
+  // Stats
+  const statsEl = document.getElementById('csv-stats-' + scope);
+  statsEl.innerHTML = `
+    <div class="csv-stat"><div class="n" style="color:var(--mint)">${ok}</div><div class="l">Válidos</div></div>
+    <div class="csv-stat"><div class="n" style="color:var(--red)">${warn}</div><div class="l">Con error</div></div>
+    <div class="csv-stat"><div class="n" style="color:var(--purple)">${rows.length}</div><div class="l">Total</div></div>
+    <div class="csv-stat"><div class="n" style="color:var(--text)">${fmt(rows.filter(r=>r.ok).reduce((s,r)=>s+r.importe,0))}</div><div class="l">Total CLP</div></div>
+  `;
+
+  // Table (show first 20)
+  const table = document.getElementById('csv-table-' + scope);
+  const preview = rows.slice(0, 20);
+  table.innerHTML = `
+    <thead><tr>
+      <th>Fecha</th><th>Descripción</th><th>Importe</th><th>Estado</th>
+    </tr></thead>
+    <tbody>
+    ${preview.map(r => `
+      <tr class="${r.ok ? 'csv-row-ok' : 'csv-row-err'}">
+        <td>${r.fecha || '—'}</td>
+        <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.descripcion || '—'}</td>
+        <td>${r.importe > 0 ? fmt(r.importe) : '<span style="color:var(--red)">'+r.importeRaw+'</span>'}</td>
+        <td><span class="csv-badge ${r.ok ? 'csv-badge-ok' : 'csv-badge-err'}">${r.ok ? '✓ OK' : '✗ Error'}</span></td>
+      </tr>
+    `).join('')}
+    ${rows.length > 20 ? `<tr><td colspan="4" style="color:var(--text2);text-align:center;padding:8px">... y ${rows.length-20} más</td></tr>` : ''}
+    </tbody>
+  `;
+
+  // Show preview, hide drop zone
+  document.getElementById('csv-drop-' + scope).style.display = 'none';
+  document.getElementById('csv-preview-' + scope).style.display = 'block';
+}
+
+function csvCancelar(scope) {
+  csvDataStore[scope] = [];
+  document.getElementById('csv-drop-' + scope).style.display = 'block';
+  document.getElementById('csv-preview-' + scope).style.display = 'none';
+}
+
+async function csvImportar(scope) {
+  const rows = (csvDataStore[scope] || []).filter(r => r.ok);
+  if (!rows.length) { showToast('No hay filas válidas para importar ❌', true); return; }
+
+  const esPersonal = scope === 'yo' ? 1 : 0;
+  const usuarioId  = scope === 'yo' && usuarioActual ? usuarioActual.id : null;
+
+  // Get first cuenta as default
+  let cuentaId = 1;
+  try {
+    const cuentas = await obtenerCacheDB('cuentas');
+    if (cuentas && cuentas.length) cuentaId = cuentas[0].id;
+  } catch(e) {}
+
+  showToast(`⏳ Importando ${rows.length} movimientos...`);
+
+  let ok = 0, err = 0;
+  for (const row of rows) {
+    const body = {
+      cuenta_id:   cuentaId,
+      fecha:       row.fecha,
+      concepto:    row.descripcion,
+      importe:     -Math.abs(row.importe),  // siempre gasto
+      tipo:        'GASTO',
+      es_personal: esPersonal,
+      usuario_id:  usuarioId
+    };
+
+    const apiAlcanzable = await verificarConectividad();
+    if (apiAlcanzable) {
+      try {
+        await apiPost('/movimientos', body);
+        ok++;
+      } catch(e) {
+        await guardarEnDB('pendientes', body);
+        ok++;
+      }
+    } else {
+      await guardarEnDB('pendientes', body);
+      ok++;
+    }
+  }
+
+  showToast(`✅ ${ok} movimientos importados`);
+  csvCancelar(scope);
+  cargarResumen(); cargarUltimos(); cargarContadorDia();
+  if (scope === 'yo') cargarVistaYo();
+}
+
 // ── Bienvenida y selección de usuario ───────────────────────
 async function mostrarBienvenida() {
   const overlay = document.getElementById('welcome-overlay');
@@ -1524,7 +1903,7 @@ async function cargarVistaYo() {
 
 async function cargarResumenYo(now) {
   try {
-    const data = await api(`/resumen/mensual?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&usuario_id=${usuarioActual.id}`);
+    const data = await api(`/resumen/mensual?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&usuario_id=${usuarioActual.id}&es_personal=1`);
     document.getElementById('yo-ingresos').textContent = fmt(data.ingresos);
     document.getElementById('yo-gastos').textContent   = fmt(data.gastos);
     document.getElementById('yo-neto').textContent     = fmt(data.neto);
@@ -1533,7 +1912,7 @@ async function cargarResumenYo(now) {
     try {
       const cached = await obtenerMovimientosCache({ mes: now.getMonth()+1, anio: now.getFullYear(), limit: 500 });
       const pendientes = await obtenerTodosDB('pendientes');
-      const todos = [...cached, ...pendientes].filter(m => m.usuario_id === usuarioActual.id);
+      const todos = [...cached, ...pendientes].filter(m => m.usuario_id === usuarioActual.id && m.es_personal == 1);
       const ingresos = todos.filter(m => m.tipo==='INGRESO').reduce((s,m) => s+Math.abs(m.importe), 0);
       const gastos   = todos.filter(m => m.tipo==='GASTO').reduce((s,m) => s+Math.abs(m.importe), 0);
       document.getElementById('yo-ingresos').textContent = fmt(ingresos);
@@ -1548,7 +1927,7 @@ async function cargarResumenYo(now) {
 async function cargarAreasYo(now) {
   const el = document.getElementById('yo-areas-chart');
   try {
-    const data = await api(`/resumen/por-area?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&usuario_id=${usuarioActual.id}`);
+    const data = await api(`/resumen/por-area?anio=${now.getFullYear()}&mes=${now.getMonth()+1}&usuario_id=${usuarioActual.id}&es_personal=1`);
     if (!data.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin gastos este mes</p>'; return; }
     const max = Math.max(...data.map(d => d.total));
     el.innerHTML = data.map(d => `
@@ -1565,7 +1944,7 @@ async function cargarAreasYo(now) {
     // Offline: calcula desde cache
     try {
       const cached = await obtenerMovimientosCache({ mes: now.getMonth()+1, anio: now.getFullYear(), tipo: 'GASTO', limit: 500 });
-      const mios = cached.filter(m => m.usuario_id === usuarioActual.id);
+      const mios = cached.filter(m => m.usuario_id === usuarioActual.id && m.es_personal == 1);
       if (!mios.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin datos en caché</p>'; return; }
       const porArea = {};
       mios.forEach(m => { if (m.area) porArea[m.area] = (porArea[m.area]||0) + Math.abs(m.importe); });
@@ -1587,15 +1966,15 @@ async function cargarAreasYo(now) {
 async function cargarUltimosYo(now) {
   const el = document.getElementById('yo-ultimos');
   try {
-    const data = await api(`/movimientos?limit=20&anio=${now.getFullYear()}&usuario_id=${usuarioActual.id}`);
+    const data = await api(`/movimientos?limit=20&anio=${now.getFullYear()}&usuario_id=${usuarioActual.id}&es_personal=1`);
     if (!data.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin movimientos</p>'; return; }
     if (data.length) await guardarMovimientosCache(data);
     el.innerHTML = '';
     data.forEach(m => el.appendChild(buildTxItem(m, 'server')));
   } catch(e) {
     const cached = await obtenerMovimientosCache({ anio: now.getFullYear(), limit: 20 });
-    const mios = cached.filter(m => m.usuario_id === usuarioActual.id);
-    const pendientes = (await obtenerTodosDB('pendientes')).filter(p => p.usuario_id === usuarioActual.id);
+    const mios = cached.filter(m => m.usuario_id === usuarioActual.id && m.es_personal == 1);
+    const pendientes = (await obtenerTodosDB('pendientes')).filter(p => p.usuario_id === usuarioActual.id && p.es_personal == 1);
     const todos = [...pendientes.map(p=>({...p,_offline:true})).reverse(), ...mios];
     if (!todos.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin datos en caché</p>'; return; }
     el.innerHTML = '';
