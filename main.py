@@ -59,7 +59,7 @@ class MovimientoIn(BaseModel):
 
 @app.get("/")
 def root():
-    return {"status": "ok", "mensaje": "API Finanzas Personales funcionando ✅"}
+    return FileResponse("03_app_movil.html")
 
 
 # --- CATÁLOGOS ---
