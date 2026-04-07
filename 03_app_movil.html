@@ -505,7 +505,7 @@
   <div id="config-section" class="config-banner" style="display:none">
     ⚙️ Configura la URL de tu API para conectar con SQL Server:
     <div class="config-input-row" style="margin-top:8px">
-      <input type="text" id="api-url-input" placeholder="http://192.168.1.50:8000">
+      <input type="text" id="api-url-input" placeholder="https://finanzas-pops.onrender.com">
       <button onclick="guardarApiUrl()">Guardar</button>
     </div>
   </div>
@@ -820,7 +820,7 @@
 </div>
 
 <script>
-let API_URL = localStorage.getItem('api_url') || 'http://192.168.0.105:8000';
+let API_URL = localStorage.getItem('api_url') || 'https://finanzas-pops.onrender.com';
 let tipoActual  = 'GASTO';
 let esPersonal  = false;       // false=casa/compartido, true=personal
 let ambitoModal = false;       // ámbito del modal de edición
