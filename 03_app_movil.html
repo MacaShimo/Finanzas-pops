@@ -505,7 +505,7 @@
   <div id="config-section" class="config-banner" style="display:none">
     ⚙️ Configura la URL de tu API para conectar con SQL Server:
     <div class="config-input-row" style="margin-top:8px">
-      <input type="text" id="api-url-input" placeholder="https://finanzas-pops.onrender.com">
+      <input type="text" id="api-url-input" placeholder="http://192.168.1.50:8000">
       <button onclick="guardarApiUrl()">Guardar</button>
     </div>
   </div>
@@ -540,7 +540,15 @@
   </div>
 
   <div class="card">
-    <div class="card-title">Últimos movimientos</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="card-title" style="margin-bottom:0" id="ultimos-titulo">Movimientos del mes</div>
+      <button id="btn-mes-anterior" onclick="toggleMesAnterior()"
+        style="padding:5px 11px;border-radius:20px;border:1.5px solid var(--border);
+               background:var(--surface2);color:var(--text2);font-size:0.72rem;
+               font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.2s">
+        Ver mes anterior
+      </button>
+    </div>
     <div id="ultimos-movimientos">Cargando...</div>
   </div>
 
@@ -688,7 +696,15 @@
   </div>
 
   <div class="card">
-    <div class="card-title">Mis últimos movimientos</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="card-title" style="margin-bottom:0">Mis movimientos del mes</div>
+      <button id="btn-mes-anterior-yo" onclick="toggleMesAnteriorYo()"
+        style="padding:5px 11px;border-radius:20px;border:1.5px solid var(--border);
+               background:var(--surface2);color:var(--text2);font-size:0.72rem;
+               font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.2s">
+        Ver mes anterior
+      </button>
+    </div>
     <div id="yo-ultimos">Cargando...</div>
   </div>
 
@@ -804,7 +820,7 @@
 </div>
 
 <script>
-let API_URL = localStorage.getItem('api_url') || 'https://finanzas-pops.onrender.com';
+let API_URL = localStorage.getItem('api_url') || 'http://192.168.0.105:8000';
 let tipoActual  = 'GASTO';
 let esPersonal  = false;       // false=casa/compartido, true=personal
 let ambitoModal = false;       // ámbito del modal de edición
@@ -1036,6 +1052,17 @@ function showTab(name) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   event.target.classList.add('active');
+  if (name === 'inicio') {
+    // Reinicia el toggle al volver a inicio
+    if (mostrandoMesAnterior) {
+      mostrandoMesAnterior = false;
+      const btn = document.getElementById('btn-mes-anterior');
+      const titulo = document.getElementById('ultimos-titulo');
+      if (btn) { btn.textContent = 'Ver mes anterior'; btn.style.background = 'var(--surface2)'; btn.style.color = 'var(--text2)'; btn.style.borderColor = 'var(--border)'; }
+      if (titulo) titulo.textContent = 'Movimientos del mes';
+    }
+    cargarUltimos();
+  }
   if (name === 'historial') cargarHistorial();
   if (name === 'yo') cargarVistaYo();
 }
@@ -1183,27 +1210,66 @@ async function cargarAreasResumen() {
   } catch(e) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Error cargando datos</p>'; }
 }
 
+// ── Estado para el toggle de mes anterior ────────────────────
+let mostrandoMesAnterior = false;
+
+function toggleMesAnterior() {
+  mostrandoMesAnterior = !mostrandoMesAnterior;
+  const btn = document.getElementById('btn-mes-anterior');
+  const titulo = document.getElementById('ultimos-titulo');
+  if (mostrandoMesAnterior) {
+    btn.textContent = 'Ver mes actual';
+    btn.style.background = 'var(--purple-bg)';
+    btn.style.color = 'var(--purple)';
+    btn.style.borderColor = 'var(--purple-l)';
+    titulo.textContent = 'Movimientos del mes anterior';
+  } else {
+    btn.textContent = 'Ver mes anterior';
+    btn.style.background = 'var(--surface2)';
+    btn.style.color = 'var(--text2)';
+    btn.style.borderColor = 'var(--border)';
+    titulo.textContent = 'Movimientos del mes';
+  }
+  cargarUltimos();
+}
+
 async function cargarUltimos() {
   const el = document.getElementById('ultimos-movimientos');
+  const now = new Date();
+
+  // Determina el mes a mostrar
+  let anio = now.getFullYear();
+  let mes  = now.getMonth() + 1;
+  if (mostrandoMesAnterior) {
+    mes--;
+    if (mes === 0) { mes = 12; anio--; }
+  }
+
   try {
-    const data = await api('/movimientos?limit=50&es_personal=0');
-    // Guarda en cache para uso offline
+    // es_personal=0 -> solo gastos de casa, filtrando por mes y anio
+    const data = await api('/movimientos?limit=100&es_personal=0&mes=' + mes + '&anio=' + anio);
     if (data.length) await guardarMovimientosCache(data);
-    const ultimos = data.slice(0, 6);
-    if (!ultimos.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin movimientos</p>'; return; }
+    if (!data.length) {
+      el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin movimientos' + (mostrandoMesAnterior ? ' el mes anterior' : ' este mes') + '</p>';
+      return;
+    }
     el.innerHTML = '';
-    ultimos.forEach(m => el.appendChild(buildTxItem(m, 'server')));
+    data.slice(0, 10).forEach(m => el.appendChild(buildTxItem(m, 'server')));
   } catch(e) {
-    // Offline: combina cache del servidor + pendientes locales
+    // Offline: combina cache del servidor + pendientes locales, filtrados por mes
     const [cachedAll, pendientesAll] = await Promise.all([
-      obtenerMovimientosCache({ limit: 50 }),
+      obtenerMovimientosCache({ mes: mes, anio: anio, limit: 100 }),
       obtenerTodosDB('pendientes')
     ]);
     // Solo casa (es_personal=0) en Inicio
-    const cached    = cachedAll.filter(m => !m.es_personal);
-    const pendientes = pendientesAll.filter(p => !p.es_personal);
+    const cached = cachedAll.filter(m => !m.es_personal);
+    const pendientes = pendientesAll.filter(p => {
+      if (p.es_personal) return false;
+      const d = new Date(p.fecha);
+      return d.getMonth() + 1 === mes && d.getFullYear() === anio;
+    });
     const pendientesConFlag = pendientes.map(p => ({ ...p, _offline: true }));
-    const todos = [...pendientesConFlag, ...cached].slice(0, 6);
+    const todos = [...pendientesConFlag, ...cached].slice(0, 10);
     if (!todos.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin datos guardados</p>'; return; }
     if (pendientes.length) {
       el.innerHTML = '<p style="color:#f59e0b;font-size:0.75rem;margin-bottom:8px">📴 Mostrando datos locales · ' + pendientes.length + ' pendiente(s) de sync</p>';
@@ -1963,19 +2029,51 @@ async function cargarAreasYo(now) {
   }
 }
 
+// ── Estado para toggle mes anterior en vista Yo ──────────────
+let mostrandoMesAnteriorYo = false;
+
+function toggleMesAnteriorYo() {
+  mostrandoMesAnteriorYo = !mostrandoMesAnteriorYo;
+  const btn = document.getElementById('btn-mes-anterior-yo');
+  if (btn) {
+    if (mostrandoMesAnteriorYo) {
+      btn.textContent = 'Ver mes actual';
+      btn.style.background = 'var(--purple-bg)';
+      btn.style.color = 'var(--purple)';
+      btn.style.borderColor = 'var(--purple-l)';
+    } else {
+      btn.textContent = 'Ver mes anterior';
+      btn.style.background = 'var(--surface2)';
+      btn.style.color = 'var(--text2)';
+      btn.style.borderColor = 'var(--border)';
+    }
+  }
+  cargarUltimosYo(new Date());
+}
+
 async function cargarUltimosYo(now) {
   const el = document.getElementById('yo-ultimos');
+  let anio = now.getFullYear();
+  let mes  = now.getMonth() + 1;
+  if (mostrandoMesAnteriorYo) {
+    mes--;
+    if (mes === 0) { mes = 12; anio--; }
+  }
   try {
-    const data = await api(`/movimientos?limit=20&anio=${now.getFullYear()}&usuario_id=${usuarioActual.id}&es_personal=1`);
-    if (!data.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin movimientos</p>'; return; }
+    const data = await api('/movimientos?limit=50&anio=' + anio + '&mes=' + mes + '&usuario_id=' + usuarioActual.id + '&es_personal=1');
+    if (!data.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin movimientos' + (mostrandoMesAnteriorYo ? ' el mes anterior' : ' este mes') + '</p>'; return; }
     if (data.length) await guardarMovimientosCache(data);
     el.innerHTML = '';
     data.forEach(m => el.appendChild(buildTxItem(m, 'server')));
   } catch(e) {
-    const cached = await obtenerMovimientosCache({ anio: now.getFullYear(), limit: 20 });
+    const cached = await obtenerMovimientosCache({ mes: mes, anio: anio, limit: 50 });
     const mios = cached.filter(m => m.usuario_id === usuarioActual.id && m.es_personal == 1);
-    const pendientes = (await obtenerTodosDB('pendientes')).filter(p => p.usuario_id === usuarioActual.id && p.es_personal == 1);
-    const todos = [...pendientes.map(p=>({...p,_offline:true})).reverse(), ...mios];
+    const pendientes = (await obtenerTodosDB('pendientes')).filter(p => {
+      if (!p.es_personal || p.usuario_id !== usuarioActual.id) return false;
+      const d = new Date(p.fecha);
+      return d.getMonth() + 1 === mes && d.getFullYear() === anio;
+    });
+    const todos = [...pendientes.map(p => ({...p, _offline: true})).reverse(), ...mios];
     if (!todos.length) { el.innerHTML = '<p style="color:#666;font-size:0.85rem">Sin datos en caché</p>'; return; }
     el.innerHTML = '';
     todos.forEach(m => el.appendChild(buildTxItem(m, m._offline ? 'offline' : 'server')));
